@@ -91,14 +91,22 @@ int utf8Length(const std::string& s) {
 }
 
 bool parseIsoLocal(const std::string& s, DateTime* out) {
-  DateTime dt{0, 0, 0, 0, 0, 0};
-  char tail = 0;
-  int n = std::sscanf(s.c_str(), "%4d-%2d-%2dT%2d:%2d:%2d%c", &dt.year, &dt.month, &dt.day,
-                      &dt.hour, &dt.minute, &dt.second, &tail);
-  const bool withSeconds = n == 6 && s.size() == 19;
-  const bool withoutSeconds = n == 5 && s.size() == 16;
-  if (!withSeconds && !withoutSeconds) return false;
-  if (withoutSeconds) dt.second = 0;
+  // Streng: nur Ziffern an festen Positionen ("YYYY-MM-DDTHH:MM" oder mit ":SS"),
+  // keine Vorzeichen oder Leerzeichen (gleiche Regel wie der TypeScript-Port).
+  if (s.size() != 16 && s.size() != 19) return false;
+  const char* tmpl = s.size() == 19 ? "dddd-dd-ddTdd:dd:dd" : "dddd-dd-ddTdd:dd";
+  for (size_t i = 0; i < s.size(); ++i) {
+    const char t = tmpl[i];
+    const char c = s[i];
+    if (t == 'd' ? (c < '0' || c > '9') : c != t) return false;
+  }
+  auto num = [&s](size_t pos, size_t len) {
+    int v = 0;
+    for (size_t i = pos; i < pos + len; ++i) v = v * 10 + (s[i] - '0');
+    return v;
+  };
+  DateTime dt{num(0, 4), num(5, 2), num(8, 2), num(11, 2), num(14, 2),
+              s.size() == 19 ? num(17, 2) : 0};
   if (!isValidDateTime(dt)) return false;
   *out = dt;
   return true;
@@ -106,8 +114,13 @@ bool parseIsoLocal(const std::string& s, DateTime* out) {
 
 std::string formatIsoLocal(const DateTime& dt) {
   char buf[24];
-  std::snprintf(buf, sizeof buf, "%04d-%02d-%02dT%02d:%02d", dt.year, dt.month, dt.day, dt.hour,
-                dt.minute);
+  if (dt.second != 0) {
+    std::snprintf(buf, sizeof buf, "%04d-%02d-%02dT%02d:%02d:%02d", dt.year, dt.month, dt.day,
+                  dt.hour, dt.minute, dt.second);
+  } else {
+    std::snprintf(buf, sizeof buf, "%04d-%02d-%02dT%02d:%02d", dt.year, dt.month, dt.day, dt.hour,
+                  dt.minute);
+  }
   return buf;
 }
 
@@ -221,7 +234,12 @@ ConfigResult applyJson(const std::string& json, Config* cfg) {
       r.wrongType("wifi");
     } else {
       r.str(wifi["ssid"], "wifi.ssid", &next.wifiSsid);
-      r.str(wifi["password"], "wifi.password", &next.wifiPassword);
+      if (!wifi["password"].isNull()) {
+        r.str(wifi["password"], "wifi.password", &next.wifiPassword);
+      } else if (next.wifiSsid != cfg->wifiSsid) {
+        // Neues (oder kein) Netz ohne neues Passwort: das alte gehört nicht dazu.
+        next.wifiPassword.clear();
+      }
     }
   }
 

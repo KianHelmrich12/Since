@@ -189,6 +189,28 @@ static void test_iso_parse_format() {
   TEST_ASSERT_FALSE(parseIsoLocal("2023-03-12 08:15", &dt));
   TEST_ASSERT_FALSE(parseIsoLocal("2023-03-12T25:00", &dt));
   TEST_ASSERT_FALSE(parseIsoLocal("2023-03-12T08:15Z", &dt));
+  // streng: keine Vorzeichen oder Leerzeichen (wie die App)
+  TEST_ASSERT_FALSE(parseIsoLocal("2026-03-12T08:15:+3", &dt));
+  TEST_ASSERT_FALSE(parseIsoLocal("2026-03- 2T08:15", &dt));
+  TEST_ASSERT_FALSE(parseIsoLocal("2026-+3-12T08:15", &dt));
+  // Sekunden bleiben beim Speichern erhalten
+  TEST_ASSERT_TRUE(parseIsoLocal("2023-03-12T08:15:30", &dt));
+  TEST_ASSERT_EQUAL_STRING("2023-03-12T08:15:30", formatIsoLocal(dt).c_str());
+}
+
+static void test_wifi_password_follows_ssid() {
+  Config c = defaultConfig();
+  TEST_ASSERT_TRUE(applyJson("{\"wifi\":{\"ssid\":\"A\",\"password\":\"geheim123\"}}", &c).ok());
+  // gleiche SSID ohne Passwort: bleibt
+  TEST_ASSERT_TRUE(applyJson("{\"wifi\":{\"ssid\":\"A\"}}", &c).ok());
+  TEST_ASSERT_EQUAL_STRING("geheim123", c.wifiPassword.c_str());
+  // anderes Netz ohne Passwort: altes Passwort wird verworfen
+  TEST_ASSERT_TRUE(applyJson("{\"wifi\":{\"ssid\":\"Offen\"}}", &c).ok());
+  TEST_ASSERT_TRUE(c.wifiPassword.empty());
+  // "" löscht ausdrücklich
+  TEST_ASSERT_TRUE(applyJson("{\"wifi\":{\"ssid\":\"Offen\",\"password\":\"geheim123\"}}", &c).ok());
+  TEST_ASSERT_TRUE(applyJson("{\"wifi\":{\"password\":\"\"}}", &c).ok());
+  TEST_ASSERT_TRUE(c.wifiPassword.empty());
 }
 
 int main(int, char**) {
@@ -207,5 +229,6 @@ int main(int, char**) {
   RUN_TEST(test_name_length_counts_codepoints);
   RUN_TEST(test_utf8_length);
   RUN_TEST(test_iso_parse_format);
+  RUN_TEST(test_wifi_password_follows_ssid);
   return UNITY_END();
 }

@@ -69,7 +69,8 @@ struct ConfigResult {
 };
 
 // Wendet ein (auch partielles) JSON-Dokument auf *cfg an: Felder, die fehlen, bleiben
-// erhalten. Ein fehlendes wifi.password lässt das gespeicherte Passwort unverändert.
+// erhalten. Ein fehlendes wifi.password lässt das gespeicherte Passwort unverändert, außer
+// wifi.ssid ändert sich (dann wird es gelöscht); "" löscht es ausdrücklich.
 // Ältere Schema-Versionen werden migriert. Bei Fehlern bleibt *cfg unverändert.
 ConfigResult applyJson(const std::string& json, Config* cfg);
 
@@ -77,7 +78,7 @@ ConfigResult applyJson(const std::string& json, Config* cfg);
 // includeSecrets=true (NVS): vollständig.
 std::string toJson(const Config& c, bool includeSecrets);
 
-// "YYYY-MM-DDTHH:MM" (Sekunden optional) ↔ DateTime
+// "YYYY-MM-DDTHH:MM" (Sekunden optional, streng) ↔ DateTime; Sekunden ≠ 0 bleiben erhalten
 bool parseIsoLocal(const std::string& s, DateTime* out);
 std::string formatIsoLocal(const DateTime& dt);
 

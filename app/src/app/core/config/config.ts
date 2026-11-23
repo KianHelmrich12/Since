@@ -143,9 +143,10 @@ export function parseIsoLocal(s: string): DateTime | null {
 
 const pad = (n: number, w = 2) => String(n).padStart(w, '0');
 
-/** DateTime → "YYYY-MM-DDTHH:MM" (wie die Firmware, ohne Sekunden). */
+/** DateTime → "YYYY-MM-DDTHH:MM", Sekunden nur wenn ≠ 0 (wie die Firmware). */
 export function formatIsoLocal(dt: DateTime): string {
-  return `${pad(dt.year, 4)}-${pad(dt.month)}-${pad(dt.day)}T${pad(dt.hour)}:${pad(dt.minute)}`;
+  const base = `${pad(dt.year, 4)}-${pad(dt.month)}-${pad(dt.day)}T${pad(dt.hour)}:${pad(dt.minute)}`;
+  return dt.second ? `${base}:${pad(dt.second)}` : base;
 }
 
 export function validate(c: Config): ValidationIssue[] {
@@ -306,7 +307,12 @@ export function applyJson(json: string | unknown, cfg: Config): ConfigResult {
       r.wrongType('wifi');
     } else {
       r.str(wifi['ssid'], 'wifi.ssid', (s) => (next.wifiSsid = s));
-      r.str(wifi['password'], 'wifi.password', (s) => (next.wifiPassword = s));
+      if (!isNull(wifi['password'])) {
+        r.str(wifi['password'], 'wifi.password', (s) => (next.wifiPassword = s));
+      } else if (next.wifiSsid !== cfg.wifiSsid) {
+        // Neues (oder kein) Netz ohne neues Passwort: das alte gehört nicht dazu (wie die Firmware).
+        next.wifiPassword = '';
+      }
     }
   }
 

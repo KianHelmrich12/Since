@@ -93,6 +93,17 @@ static void test_wake_over_dst_change() {
   TEST_ASSERT_EQUAL_INT64(local(2026, 3, 29, 8, 15) + kWakeMarginS, nextWakeUtc(c, now, false));
 }
 
+static void test_wake_event_time_in_dst_gap() {
+  // Fund aus dem Review: Ereignis 02:02 Lokalzeit, Umstellung 02:00→03:00 (Neuseeland)
+  TimeZone nz;
+  TEST_ASSERT_TRUE(TimeZone::parse("NZST-12NZDT,M9.5.0,M4.1.0/3", &nz));
+  Config c = eventConfig({2020, 1, 1, 2, 2, 0});
+  c.tz = "NZST-12NZDT,M9.5.0,M4.1.0/3";
+  const Epoch now = nz.toUtc(DateTime{2024, 9, 29, 1, 0, 0});
+  const Epoch jump = nz.toUtc(DateTime{2024, 9, 29, 3, 0, 0});  // Zeitpunkt des Sprungs
+  TEST_ASSERT_EQUAL_INT64(jump + kWakeMarginS, nextWakeUtc(c, now, false));
+}
+
 static void test_sync_due() {
   Config c = defaultConfig();
   const Epoch now = 1795000000;
@@ -289,6 +300,7 @@ int main(int, char**) {
   RUN_TEST(test_wake_interval_and_caps);
   RUN_TEST(test_wake_countdown_hits_event);
   RUN_TEST(test_wake_over_dst_change);
+  RUN_TEST(test_wake_event_time_in_dst_gap);
   RUN_TEST(test_sync_due);
   RUN_TEST(test_screen_standard);
   RUN_TEST(test_screen_birthday_and_minimal);

@@ -202,4 +202,27 @@ describe('config', () => {
     expect(parseIsoLocal('2023-02-29T00:00')).toBeNull();
     expect(parseIsoLocal('2024-02-29T00:00')).not.toBeNull();
   });
+
+  it('rejects signs and spaces in ISO dates like the firmware', () => {
+    expect(parseIsoLocal('2026-03-12T08:15:+3')).toBeNull();
+    expect(parseIsoLocal('2026-03- 2T08:15')).toBeNull();
+    expect(parseIsoLocal('2026-+3-12T08:15')).toBeNull();
+  });
+
+  it('keeps non-zero seconds when formatting', () => {
+    const dt = parseIsoLocal('2023-03-12T08:15:30')!;
+    expect(formatIsoLocal(dt)).toBe('2023-03-12T08:15:30');
+    expect(formatIsoLocal(parseIsoLocal('2023-03-12T08:15')!)).toBe('2023-03-12T08:15');
+  });
+
+  it('drops the stored password when the SSID changes without a new one', () => {
+    let c = applyJson('{"wifi":{"ssid":"A","password":"geheim123"}}', defaultConfig()).config!;
+    c = applyJson('{"wifi":{"ssid":"A"}}', c).config!;
+    expect(c.wifiPassword).toBe('geheim123');
+    c = applyJson('{"wifi":{"ssid":"Offen"}}', c).config!;
+    expect(c.wifiPassword).toBe('');
+    c = applyJson('{"wifi":{"password":"geheim123"}}', c).config!;
+    c = applyJson('{"wifi":{"password":""}}', c).config!;
+    expect(c.wifiPassword).toBe('');
+  });
 });

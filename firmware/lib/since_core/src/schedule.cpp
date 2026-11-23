@@ -13,7 +13,20 @@ Epoch nextLocalTimeOfDay(const TimeZone& tz, Epoch nowUtc, int h, int m, int s) 
   const int64_t today = daysFromCivil(local.date());
   for (int64_t d = today; d <= today + 2; ++d) {
     const Date date = civilFromDays(d);
-    const Epoch t = tz.toUtc(DateTime{date.year, date.month, date.day, h, m, s});
+    const DateTime want{date.year, date.month, date.day, h, m, s};
+    Epoch t = tz.toUtc(want);
+    // Liegt die Wanduhrzeit in einer DST-Lücke, ändert sich der Text schon beim Sprung:
+    // frühesten Zeitpunkt suchen, dessen Lokalzeit die gewünschte erreicht.
+    const Epoch wantWall = toSeconds(want);
+    if (toSeconds(tz.toLocal(t)) != wantWall) {
+      Epoch lo = t - 3 * 3600, hi = t;
+      while (hi - lo > 1) {
+        const Epoch mid = lo + (hi - lo) / 2;
+        if (toSeconds(tz.toLocal(mid)) >= wantWall) hi = mid;
+        else lo = mid;
+      }
+      t = hi;
+    }
     if (t > nowUtc) return t;
   }
   return nowUtc + kMaxSleepS;
