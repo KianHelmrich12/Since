@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>since – Firmware installieren</title>
+<script type="module" src="https://unpkg.com/esp-web-tools@10.1.0/dist/web/install-button.js?module"></script>
+<style>
+  :root{--fg:#111;--bg:#fff;--mut:#555}
+  @media(prefers-color-scheme:dark){:root{--fg:#eee;--bg:#121212;--mut:#aaa}}
+  body{margin:0;padding:2rem 1rem;font:17px/1.5 system-ui,sans-serif;color:var(--fg);background:var(--bg)}
+  main{max-width:36rem;margin:0 auto} p{color:var(--mut)}
+</style>
+</head>
+<body>
+<main>
+  <h1>since installieren</h1>
+  <p>Gerät per USB-C anschließen, dann auf „Installieren“ klicken. Funktioniert in Chrome oder Edge
+     am Computer. Firmware und Web-Oberfläche werden zusammen geschrieben
+     (Offsets: App 0x0, LittleFS 0xC90000).</p>
+  <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
+  <p>Danach Taste 1 (KEY0) drücken und dich mit dem angezeigten WLAN verbinden.</p>
+</main>
+</body>
+</html>

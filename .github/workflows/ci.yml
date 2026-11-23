@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  firmware:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: firmware
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio
+            firmware/.pio/libdeps
+          key: pio-${{ hashFiles('firmware/platformio.ini') }}
+      - run: pip install platformio
+      - name: Host-Tests (since_core)
+        run: pio test -e native
+      - name: Firmware bauen
+        run: pio run -e ee04
+      - name: LittleFS-Image bauen
+        run: pio run -e ee04 -t buildfs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: |
+            firmware/.pio/build/ee04/firmware.bin
+            firmware/.pio/build/ee04/firmware.factory.bin
+            firmware/.pio/build/ee04/littlefs.bin

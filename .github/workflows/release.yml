@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install platformio
+      - name: Tests und Build
+        working-directory: firmware
+        run: |
+          pio test -e native
+          pio run -e ee04
+          pio run -e ee04 -t buildfs
+      - name: Artefakte sammeln
+        run: |
+          mkdir -p dist
+          cp firmware/.pio/build/ee04/firmware.bin dist/
+          cp firmware/.pio/build/ee04/firmware.factory.bin dist/
+          cp firmware/.pio/build/ee04/littlefs.bin dist/
+          (cd dist && sha256sum *.bin > SHA256SUMS)
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
+      - name: Web-Flasher vorbereiten
+        run: |
+          mkdir -p site
+          cp docs/flasher/index.html docs/flasher/manifest.json site/
+          cp dist/firmware.factory.bin dist/littlefs.bin site/
+          sed -i "s/__VERSION__/${GITHUB_REF_NAME#v}/" site/manifest.json
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  pages:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
