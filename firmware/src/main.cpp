@@ -174,20 +174,19 @@ void setup() {
     }
   }
 
-  // Bei Brownout nicht zeichnen: das Panel würde den Akku weiter belasten.
-  if (reason != hw::WakeReason::kBrownout) {
-    const since::ScreenModel model =
-        since::buildScreen(baseInputs(cfg, now, mv, level, lostPower));
-    const uint32_t fp = since::screenFingerprint(model);
-    if (forceRedraw || fp != g_lastFingerprint) {
-      display::show(model);
-      g_lastFingerprint = fp;
-    }
-  }
-
-  // Ohne gültige Uhrzeit kein sinnvoller Alarm: nur Tasten bzw. täglicher Timer.
-  const since::Epoch wake =
-      lostPower || now == 0 ? now + since::kMaxSleepS : since::nextWakeUtc(cfg, now, critical);
+  since::CycleInputs ci;
+  ci.config = cfg;
+  ci.nowUtc = now;
+  ci.rtcLostPower = lostPower;
+  ci.batteryMv = mv;
+  ci.previousLevel = level;
+  ci.brownout = reason == hw::WakeReason::kBrownout;
+  ci.forceRedraw = forceRedraw;
+  ci.lastFingerprint = g_lastFingerprint;
+  const since::CycleResult cr = since::runCycle(ci);  // gleiche Logik wie im Emulator
+  if (cr.draw) display::show(cr.model);
+  g_lastFingerprint = cr.fingerprint;
+  const since::Epoch wake = cr.nextWakeUtc;
   Serial.printf("sleep until %lld (in %lld s)\n", static_cast<long long>(wake),
                 static_cast<long long>(wake - now));
   hw::deepSleepUntil(now, wake);

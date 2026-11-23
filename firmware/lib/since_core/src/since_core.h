@@ -6,6 +6,7 @@
 #include "battery.h"
 #include "civil.h"
 #include "config.h"
+#include "cycle.h"
 #include "elapsed.h"
 #include "format_de.h"
 #include "framing.h"
