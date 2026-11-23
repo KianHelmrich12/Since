@@ -1,0 +1,25 @@
+# PlatformIO
+.pio/
+.pioenvs/
+.piolibdeps/
+firmware/.pio/
+
+# Editoren / IDEs
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.swp
+*~
+
+# Betriebssysteme
+.DS_Store
+Thumbs.db
+
+# Gehäuse-Zwischenstände (Exporte werden gezielt eingecheckt)
+enclosure/build/
+*.scad.bak
+
+# Lokale Notizen / Secrets – WLAN-Daten gehören nur ins NVS des Geräts
+*.local
+secrets.h
+.env
