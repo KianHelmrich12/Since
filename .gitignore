@@ -23,3 +23,6 @@ enclosure/build/
 *.local
 secrets.h
 .env
+
+# Generierte Portal-Assets (tools/build_web.py)
+firmware/data/*.gz

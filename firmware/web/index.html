@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>since – Einrichtung</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h1>since</h1><span id="dev"></span></header>
+<nav>
+  <button data-tab="cfg" class="on">Einstellungen</button>
+  <button data-tab="time">Uhrzeit</button>
+  <button data-tab="status">Status</button>
+  <button data-tab="more">Mehr</button>
+</nav>
+<main>
+<section id="cfg">
+  <form id="f" novalidate>
+    <label>Name<input name="name" maxlength="32" placeholder="z. B. Mila"></label>
+    <label>Anlass<input name="occasion" maxlength="64" placeholder="z. B. seit deiner Geburt"></label>
+    <div class="row">
+      <label>Datum<input name="date" type="date"></label>
+      <label>Uhrzeit<input name="time" type="time"></label>
+    </div>
+    <label>Zeitzone
+      <select name="tzp">
+        <option value="CET-1CEST,M3.5.0,M10.5.0/3">Deutschland / Österreich / Schweiz</option>
+        <option value="GMT0BST,M3.5.0/1,M10.5.0">Großbritannien</option>
+        <option value="UTC0">UTC</option>
+        <option value="">Eigene (POSIX-TZ)</option>
+      </select>
+    </label>
+    <label id="tzc" hidden>POSIX-TZ<input name="tz" maxlength="64"></label>
+    <label>Layout
+      <select name="layout"><option value="standard">Standard</option><option value="minimal">Minimal</option></select>
+    </label>
+    <label class="chk"><input type="checkbox" name="showTime"> Stunden anzeigen</label>
+    <label>Aktualisierung
+      <select name="mode"><option value="auto">Automatisch (nur bei Änderung)</option><option value="interval">Festes Intervall</option></select>
+    </label>
+    <label id="ivl" hidden>Intervall (Minuten)<input name="intervalMinutes" type="number" min="10" max="1440"></label>
+    <fieldset>
+      <legend>WLAN für Zeit-Sync (optional)</legend>
+      <label>SSID<input name="ssid" maxlength="32" autocomplete="off"></label>
+      <label>Passwort<input name="password" type="password" maxlength="63" autocomplete="new-password" placeholder=""></label>
+      <label class="chk"><input type="checkbox" name="ntp"> Uhrzeit wöchentlich per Internet abgleichen</label>
+    </fieldset>
+    <label class="chk"><input type="checkbox" name="portalSecure"> Einrichtungs-WLAN mit Passwort schützen</label>
+    <button type="submit" class="pri">Speichern</button>
+  </form>
+</section>
+<section id="time" hidden>
+  <p>Das Gerät hat eine eigene Uhr. Hier überträgst du die Uhrzeit deines Handys – Internet ist nicht nötig.</p>
+  <p class="big" id="clk"></p>
+  <button id="settime" class="pri">Uhrzeit vom Handy übernehmen</button>
+</section>
+<section id="status" hidden>
+  <dl id="st"></dl>
+  <button id="reload">Aktualisieren</button>
+</section>
+<section id="more" hidden>
+  <h2>Firmware-Update</h2>
+  <p>Datei <code>firmware.bin</code> (oder <code>littlefs.bin</code>) auswählen.</p>
+  <input type="file" id="fw" accept=".bin">
+  <label class="chk"><input type="checkbox" id="fs"> Web-Oberfläche (littlefs.bin)</label>
+  <progress id="prog" max="100" value="0" hidden></progress>
+  <button id="ota">Hochladen</button>
+  <h2>Werksreset</h2>
+  <p>Löscht alle Einstellungen inklusive WLAN-Daten.</p>
+  <button id="reset" class="warn">Auf Werkseinstellungen zurücksetzen</button>
+</section>
+<button id="done" class="pri wide">Fertig – Einrichtung beenden</button>
+</main>
+<div id="msg" role="status"></div>
+<script src="app.js"></script>
+</body>
+</html>
