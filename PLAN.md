@@ -71,7 +71,7 @@ App (`app/`):
 - [x] BLE-Schicht über `@capacitor-community/bluetooth-le` hinter einem Interface, dazu ein Mock-Gerät für Browser-Entwicklung und Tests
 - [x] Seiten: Gerät suchen/koppeln, Einstellungen (Name, Anlass, Datum/Uhrzeit, TZ, Layout, Intervall, WLAN/NTP), Uhrzeit vom Handy übernehmen, Status
 - [x] Datenmodell + Validierung spiegeln since_core. Kontrakttests gegen `shared/fixtures/`
-- [ ] Unit-Tests (`ng test`) grün, Debug-APK baut (`npx cap sync android` + Gradle `assembleDebug`)
+- [x] Unit-Tests (`ng test`) grün, Debug-APK baut (`npx cap sync android` + Gradle `assembleDebug`) – in der CI (GitHub Actions) grün, APK als Artefakt
 
 Akzeptanz: Tests + APK-Build grün. **MANUELL PRÜFEN**: Auf einem Android-Handy koppeln, Config schreiben und Uhrzeit übernehmen; das Display aktualisiert sich und die Werte überleben einen Neustart.
 
