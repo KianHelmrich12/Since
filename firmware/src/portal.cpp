@@ -8,6 +8,7 @@
 #include <WebServer.h>
 #include <NimBLEDevice.h>
 #include <WiFi.h>
+#include <esp_task_wdt.h>
 
 #include "api.h"
 #include "config_store.h"
@@ -64,18 +65,30 @@ bool serveStatic(String path) {
   return true;
 }
 
+// OTA und Werksreset verlangen den Code vom Display (Header X-Setup-Code). So reicht es
+// nicht, im (ggf. offenen) Setup-WLAN zu sein oder eine fremde Webseite offen zu haben.
+bool authorized() {
+  const String code = g_server->header("X-Setup-Code");
+  return !device::setup().passkey.empty() && code == device::setup().passkey.c_str();
+}
+
 void handleOtaUpload() {
   HTTPUpload& up = g_server->upload();
   device::hooks().touch();
+  esp_task_wdt_reset();  // ein Upload läuft komplett in einem handleClient()-Aufruf
   if (up.status == UPLOAD_FILE_START) {
     g_otaError = "";
+    if (!authorized()) {
+      g_otaError = "unauthorized";
+      return;
+    }
     const int cmd = g_server->arg("type") == "fs" ? U_SPIFFS : U_FLASH;
     if (!Update.begin(UPDATE_SIZE_UNKNOWN, cmd)) g_otaError = Update.errorString();
   } else if (up.status == UPLOAD_FILE_WRITE) {
-    if (g_otaError.isEmpty() && Update.write(up.buf, up.currentSize) != up.currentSize)
+    if (g_otaError.isEmpty() && Update.isRunning() && Update.write(up.buf, up.currentSize) != up.currentSize)
       g_otaError = Update.errorString();
   } else if (up.status == UPLOAD_FILE_END) {
-    if (g_otaError.isEmpty() && !Update.end(true)) g_otaError = Update.errorString();
+    if (g_otaError.isEmpty() && Update.isRunning() && !Update.end(true)) g_otaError = Update.errorString();
   } else if (up.status == UPLOAD_FILE_ABORTED) {
     Update.abort();
     g_otaError = "aborted";
@@ -93,6 +106,10 @@ void routes() {
   g_server->on("/api/redraw", HTTP_POST, [&hooks]() { sendApi(since::callApi(hooks, "redraw", "{}")); });
   g_server->on("/api/exit", HTTP_POST, [&hooks]() { sendApi(since::callApi(hooks, "exitSetup", "{}")); });
   g_server->on("/api/factory-reset", HTTP_POST, []() {
+    if (!authorized()) {
+      g_server->send(403, "application/json", "{\"error\":\"unauthorized\"}");
+      return;
+    }
     if (body().find("\"confirm\":\"RESET\"") == std::string::npos) {
       g_server->send(400, "application/json", "{\"error\":\"bad_request\"}");
       return;
@@ -106,7 +123,9 @@ void routes() {
   g_server->on(
       "/api/ota", HTTP_POST,
       []() {
-        if (g_otaError.isEmpty()) {
+        if (g_otaError == "unauthorized") {
+          g_server->send(403, "application/json", "{\"error\":\"unauthorized\"}");
+        } else if (g_otaError.isEmpty()) {
           g_server->send(200, "application/json", "{}");
           g_reboot = true;
         } else {
@@ -121,7 +140,10 @@ void routes() {
     g_server->on(p, HTTP_ANY, redirectToPortal);
   }
   g_server->onNotFound([]() {
-    device::hooks().touch();
+    // Nur echte Portal-Aufrufe zählen als Aktivität; Hintergrund-Traffic des Handys
+    // (per Wildcard-DNS hierher umgeleitet) darf den Setup-Modus nicht offen halten.
+    const bool own = g_server->hostHeader() == "192.168.4.1" || g_server->hostHeader().isEmpty();
+    if (own) device::hooks().touch();
     const String uri = g_server->uri();
     if (uri.startsWith("/api/")) {
       g_server->send(404, "application/json", "{\"error\":\"unknown_op\"}");
@@ -154,6 +176,8 @@ bool start() {
   g_dns->setErrorReplyCode(DNSReplyCode::NoError);
   g_dns->start(53, "*", kIp);
   g_server = new WebServer(80);
+  const char* headers[] = {"X-Setup-Code"};
+  g_server->collectHeaders(headers, 1);
   routes();
   g_server->begin();
   return true;

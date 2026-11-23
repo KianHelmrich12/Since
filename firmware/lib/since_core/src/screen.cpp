@@ -52,7 +52,7 @@ ScreenModel buildScreen(const ScreenInputs& in) {
     m.subtitle = "WLAN: " + in.setup.ssid;
     m.headline = in.setup.password.empty() ? "ohne Passwort" : "Passwort: " + in.setup.password;
     m.line1 = "Dann im Browser: " + in.setup.url;
-    m.line2 = in.setup.passkey.empty() ? "" : "App-Passkey: " + in.setup.passkey;
+    m.line2 = in.setup.passkey.empty() ? "" : "Code (App, Update): " + in.setup.passkey;
     m.qr = wifiQrPayload(in.setup.ssid, in.setup.password);
     return m;
   }

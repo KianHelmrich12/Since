@@ -89,7 +89,12 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/api/time":
             STATE["offset"] = int(body.get("epoch", time.time())) - int(time.time())
             return self._json(200, {"epoch": body.get("epoch")})
-        if self.path in ("/api/exit", "/api/redraw", "/api/factory-reset", "/api/ota"):
+        if self.path.startswith(("/api/factory-reset", "/api/ota")):
+            # Wie das Gerät: Code vom Display nötig (im Mock: 123456)
+            if self.headers.get("X-Setup-Code") != "123456":
+                return self._json(403, {"error": "unauthorized"})
+            return self._json(200, {})
+        if self.path in ("/api/exit", "/api/redraw"):
             return self._json(200, {})
         return self._json(404, {"error": "unknown_op"})
 

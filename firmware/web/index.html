@@ -44,6 +44,7 @@
       <legend>WLAN für Zeit-Sync (optional)</legend>
       <label>SSID<input name="ssid" maxlength="32" autocomplete="off"></label>
       <label>Passwort<input name="password" type="password" maxlength="63" autocomplete="new-password" placeholder=""></label>
+      <label class="chk"><input type="checkbox" name="nopw"> Gespeichertes Passwort entfernen (offenes WLAN)</label>
       <label class="chk"><input type="checkbox" name="ntp"> Uhrzeit wöchentlich per Internet abgleichen</label>
     </fieldset>
     <label class="chk"><input type="checkbox" name="portalSecure"> Einrichtungs-WLAN mit Passwort schützen</label>
@@ -67,7 +68,7 @@
   <progress id="prog" max="100" value="0" hidden></progress>
   <button id="ota">Hochladen</button>
   <h2>Werksreset</h2>
-  <p>Löscht alle Einstellungen inklusive WLAN-Daten.</p>
+  <p>Löscht alle Einstellungen inklusive WLAN-Daten. Für Update und Werksreset wird der Code vom Display abgefragt.</p>
   <button id="reset" class="warn">Auf Werkseinstellungen zurücksetzen</button>
 </section>
 <button id="done" class="pri wide">Fertig – Einrichtung beenden</button>

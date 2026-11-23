@@ -21,7 +21,7 @@ Portal mit „Fertig“. Außerhalb des Setup-Modus sind Funk und BLE aus, damit
 ## Sicherheit
 - **Kopplung:** LE Secure Connections mit Passkey Entry. Das Gerät zeigt einen zufälligen sechsstelligen Passkey auf dem E-Paper (Setup-Screen), das Handy fragt ihn im System-Dialog ab.
 - **Zugriff:** Auf `rx` und `tx` geht nur eine verschlüsselte, authentifizierte Verbindung. Der erste Zugriff löst die Kopplung aus.
-- **Nicht über BLE:** Werksreset und Firmware-Update. Beides geht nur am Gerät bzw. im Portal.
+- **Nicht über BLE:** Werksreset und Firmware-Update. Beides geht nur am Gerät bzw. im Portal. Im Portal verlangen beide denselben sechsstelligen Code im Header `X-Setup-Code`.
 
 ## Framing
 Nachrichten sind UTF-8-JSON und werden in Frames gestückelt.
