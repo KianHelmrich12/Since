@@ -9,7 +9,8 @@
 
 namespace device {
 
-constexpr unsigned long kSetupTimeoutMs = 10UL * 60UL * 1000UL;
+constexpr unsigned long kSetupTimeoutMs = 10UL * 60UL * 1000UL;  // ohne Aktivität
+constexpr unsigned long kSetupMaxMs = 30UL * 60UL * 1000UL;      // harte Obergrenze (Akku)
 
 struct SetupState {
   std::string name;  // since-XXXX

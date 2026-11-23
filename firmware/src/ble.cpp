@@ -23,14 +23,17 @@ NimBLECharacteristic* g_tx = nullptr;
 since::Reassembler g_rx;
 std::mutex g_mutex;
 std::deque<std::string> g_pending;  // vollständige Anfragen
-uint16_t g_mtu = 23;
+uint16_t g_conn = BLE_HS_CONN_HANDLE_NONE;  // aktuelle Verbindung (eine zur Zeit)
 
 class ServerCallbacks : public NimBLEServerCallbacks {
-  void onConnect(NimBLEServer*, NimBLEConnInfo&) override { device::hooks().touch(); }
+  void onConnect(NimBLEServer*, NimBLEConnInfo& info) override {
+    g_conn = info.getConnHandle();
+    device::hooks().touch();
+  }
   void onDisconnect(NimBLEServer*, NimBLEConnInfo&, int) override {
+    g_conn = BLE_HS_CONN_HANDLE_NONE;
     NimBLEDevice::startAdvertising();
   }
-  void onMTUChange(uint16_t mtu, NimBLEConnInfo&) override { g_mtu = mtu; }
   uint32_t onPassKeyDisplay() override { return device::setup().passkeyNumeric; }
   void onAuthenticationComplete(NimBLEConnInfo& info) override {
     if (!info.isEncrypted() || !info.isAuthenticated()) {
@@ -56,11 +59,18 @@ ServerCallbacks g_serverCb;
 RxCallbacks g_rxCb;
 
 void send(const std::string& msg) {
-  if (g_tx == nullptr) return;
-  const size_t frame = g_mtu > 3 ? g_mtu - 3 : 20;
+  if (g_tx == nullptr || g_server == nullptr || g_conn == BLE_HS_CONN_HANDLE_NONE) return;
+  // MTU pro Verbindung abfragen: ein neuer Client kann eine kleinere MTU haben.
+  const uint16_t mtu = g_server->getPeerMTU(g_conn);
+  const size_t frame = mtu > 3 ? mtu - 3 : 20;
   for (const auto& f : since::splitFrames(msg, frame)) {
     g_tx->setValue(reinterpret_cast<const uint8_t*>(f.data()), f.size());
-    g_tx->notify();
+    bool sent = false;
+    for (int attempt = 0; attempt < 5 && !sent; ++attempt) {
+      sent = g_tx->notify();
+      if (!sent) delay(20);  // Puffer des Controllers voll
+    }
+    if (!sent) return;  // Rest verwerfen; die App läuft in ihr Timeout und fragt neu
     delay(5);
   }
 }
@@ -110,6 +120,8 @@ void loop() {
 void stop() {
   if (g_server == nullptr) return;
   NimBLEDevice::getAdvertising()->stop();
+  for (uint16_t h : g_server->getPeerDevices()) g_server->disconnect(h);
+  delay(100);  // Trennung an die Gegenstelle senden
   NimBLEDevice::deinit(true);
   g_server = nullptr;
   g_tx = nullptr;

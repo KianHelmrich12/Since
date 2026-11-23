@@ -89,7 +89,9 @@ void runSetup(since::Config& cfg, int mv, since::BatteryLevel level) {
   const bool bleOk = ble::start();
   Serial.printf("setup: %s portal=%d ble=%d\n", st.name.c_str(), portalOk, bleOk);
 
-  while (!st.exitRequested && millis() - st.lastActivityMs < device::kSetupTimeoutMs) {
+  const unsigned long setupStart = millis();
+  while (!st.exitRequested && millis() - st.lastActivityMs < device::kSetupTimeoutMs &&
+         millis() - setupStart < device::kSetupMaxMs) {
     esp_task_wdt_reset();
     portal::loop();
     ble::loop();
@@ -99,6 +101,13 @@ void runSetup(since::Config& cfg, int mv, since::BatteryLevel level) {
       portal::stop();
       ESP.restart();
     }
+    delay(2);
+  }
+  // Nachlauf: letzte Antworten (z. B. auf exitSetup) noch ausliefern, bevor Funk endet.
+  const unsigned long linger = millis();
+  while (millis() - linger < 600) {
+    portal::loop();
+    ble::loop();
     delay(2);
   }
   ble::stop();
