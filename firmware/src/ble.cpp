@@ -115,4 +115,10 @@ void stop() {
   g_tx = nullptr;
 }
 
+void clearBonds() {
+  NimBLEDevice::init("");
+  NimBLEDevice::deleteAllBonds();
+  NimBLEDevice::deinit(true);
+}
+
 }  // namespace ble

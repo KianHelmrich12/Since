@@ -6,6 +6,7 @@
 #include <LittleFS.h>
 #include <Update.h>
 #include <WebServer.h>
+#include <NimBLEDevice.h>
 #include <WiFi.h>
 
 #include "api.h"
@@ -98,6 +99,7 @@ void routes() {
     }
     since::eraseConfig();
     device::clearSyncState();
+    NimBLEDevice::deleteAllBonds();  // BLE läuft im Setup-Modus parallel
     g_server->send(200, "application/json", "{}");
     g_reboot = true;
   });

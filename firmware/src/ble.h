@@ -7,5 +7,6 @@ namespace ble {
 bool start();  // Name + Passkey aus device::setup()
 void loop();   // fertige Anfragen abarbeiten (außerhalb der BLE-Callbacks)
 void stop();
+void clearBonds();  // Werksreset: gespeicherte Kopplungen löschen
 
 }  // namespace ble

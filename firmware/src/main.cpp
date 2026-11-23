@@ -138,6 +138,7 @@ void setup() {
         Serial.println("factory reset");
         since::eraseConfig();
         device::clearSyncState();
+        ble::clearBonds();
         g_lastFingerprint = 0;
         ESP.restart();
       }

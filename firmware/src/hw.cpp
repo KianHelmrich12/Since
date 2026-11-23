@@ -137,8 +137,16 @@ void deepSleepUntil(since::Epoch nowUtc, since::Epoch wakeUtc) {
   rtc_gpio_pulldown_dis(static_cast<gpio_num_t>(board::kRtcInt));
   esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON);  // für den Pull-up
 
-  esp_sleep_enable_ext1_wakeup(board::kWakeMask, ESP_EXT1_WAKEUP_ANY_LOW);
-  const since::Epoch delta = wakeUtc - nowUtc + (alarmSet ? kTimerFallbackS : 0);
+  // Hängt INT dauerhaft auf LOW (Alarm nicht quittierbar, Pull-up fehlt), würde ext1 sofort
+  // wieder wecken und den Akku leeren → RTC-Pin dann ausnehmen, Timer übernimmt.
+  uint64_t mask = board::kWakeMask;
+  delay(2);
+  if (rtc_gpio_get_level(static_cast<gpio_num_t>(board::kRtcInt)) == 0) {
+    mask &= ~(1ULL << board::kRtcInt);
+  }
+  esp_sleep_enable_ext1_wakeup(mask, ESP_EXT1_WAKEUP_ANY_LOW);
+  const bool rtcWake = alarmSet && (mask & (1ULL << board::kRtcInt)) != 0;
+  const since::Epoch delta = wakeUtc - nowUtc + (rtcWake ? kTimerFallbackS : 0);
   esp_sleep_enable_timer_wakeup(static_cast<uint64_t>(delta) * 1000000ULL);
   Serial.flush();
   esp_deep_sleep_start();
