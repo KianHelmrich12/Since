@@ -1,0 +1,35 @@
+# PlatformIO
+.pio/
+.pioenvs/
+.piolibdeps/
+firmware/.pio/
+
+# Editoren / IDEs
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.swp
+*~
+
+# Betriebssysteme
+.DS_Store
+Thumbs.db
+
+# Gehäuse-Zwischenstände (Exporte werden gezielt eingecheckt)
+enclosure/build/
+*.scad.bak
+
+# Lokale Notizen / Secrets – WLAN-Daten gehören nur ins NVS des Geräts
+*.local
+secrets.h
+.env
+
+# Generierte Portal-Assets (tools/build_web.py)
+firmware/data/*.gz
+
+# Lokale Agent-/Editor-Daten
+.claude/
+.playwright-mcp/
+
+# Python-Cache
+__pycache__/

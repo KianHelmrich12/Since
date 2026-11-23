@@ -1,0 +1,8 @@
+{
+  "name": "since_core",
+  "version": "0.9.0",
+  "description": "Hardware-free core logic for since (time math, formatting, config validation)",
+  "license": "GPL-3.0-or-later",
+  "frameworks": "*",
+  "platforms": "*"
+}

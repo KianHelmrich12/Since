@@ -1,0 +1,14 @@
+{
+  "name": "since",
+  "version": "__VERSION__",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        { "path": "firmware.factory.bin", "offset": 0 },
+        { "path": "littlefs.bin", "offset": 13172736 }
+      ]
+    }
+  ]
+}

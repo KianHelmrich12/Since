@@ -1,0 +1,27 @@
+/* Fonts self-hosted, no request to Google. The layer keeps .z-icon from
+   zenit-ui.css ahead of the font-size that material-icons sets itself. */
+@import 'material-icons/iconfont/filled.css' layer(schriften);
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/space-grotesk/600.css';
+@import '@fontsource/space-grotesk/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/600.css';
+
+/* Seitenrahmen; jede Seite ist selbst ein z-stack (PageHeader, dann Panels). */
+.app-main {
+  padding-block: var(--space-6) var(--space-8);
+}
+
+/* Datum und Uhrzeit nebeneinander, auf schmalen Bildschirmen untereinander. */
+.app-pair {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+}
+
+.app-note {
+  margin: 0;
+  max-width: var(--measure);
+}

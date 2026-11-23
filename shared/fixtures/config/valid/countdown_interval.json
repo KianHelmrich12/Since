@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "name": "Hochzeit",
+  "event": "2030-06-15T14:30",
+  "tz": "<+0530>-5:30",
+  "layout": "minimal",
+  "showTime": true,
+  "update": { "mode": "interval", "intervalMinutes": 10 }
+}
