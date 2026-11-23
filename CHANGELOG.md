@@ -4,6 +4,18 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
+### Fixed
+- NTP-Sync: Der Sync-Status wurde doppelt gelesen, deshalb wurde die RTC nie gestellt.
+- Setup-Ende: Antworten werden noch ausgeliefert, BLE-Verbindungen sauber getrennt.
+- BLE: MTU pro Verbindung, `notify()` mit Wiederholung.
+- OTA: Watchdog wird während des Uploads gefüttert.
+- Setup-Timeout zählt nur echte Portal-Aufrufe; harte Obergrenze 30 min.
+- ISO-Datum strikt wie in der App; Sekunden bleiben erhalten.
+- Altes WLAN-Passwort wird beim Netzwechsel verworfen; „Passwort entfernen“ im Portal.
+- Weckzeit bei Ereignis-Uhrzeit in einer DST-Lücke.
+
+### Security
+- OTA und Werksreset im Portal verlangen den Code vom Display (`X-Setup-Code`).
 
 ## [0.9.0] – 2026-11-23
 Release-Kandidat: Software vollständig, Hardware-Abnahme (docs/abnahme.md) steht aus.
