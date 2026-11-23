@@ -1,0 +1,12 @@
+/* Fonts self-hosted, no request to Google. The layer keeps .z-icon from
+   zenit-ui.css ahead of the font-size that material-icons sets itself. */
+@import 'material-icons/iconfont/filled.css' layer(schriften);
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/space-grotesk/600.css';
+@import '@fontsource/space-grotesk/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/600.css';
+
+/* You can add global styles to this file, and also import other style files */
