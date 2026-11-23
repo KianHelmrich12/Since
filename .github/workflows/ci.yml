@@ -28,6 +28,10 @@ jobs:
         run: pio run -e ee04
       - name: LittleFS-Image bauen
         run: pio run -e ee04 -t buildfs
+      - name: Geräte-Emulator (Fonts + Durchlauf)
+        run: |
+          pip install pillow
+          python3 tools/emulator_check.py
       - uses: actions/upload-artifact@v4
         with:
           name: firmware
