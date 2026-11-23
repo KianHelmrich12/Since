@@ -37,7 +37,7 @@ Akzeptanz: **MANUELL PRÜFEN (offen)** – Text sichtbar, RTC läuft nach Stromt
 ## Phase 4 – Darstellung
 - [x] Layouts: Standard (Name groß, „3 Jahre · 2 Monate · 14 Tage“, „seit 12.03.2026, 08:15“, Gesamttage), Minimal, Geburtstag, Akku leer, Setup-Modus
 - [x] Fonts mit Umlauten, Akku-Symbol
-- [ ] Optional: Host-Renderer, der Layouts als PNG/PBM nach docs/previews/ exportiert
+- [x] Optional: Host-Renderer, der Layouts als PNG nach docs/previews/ exportiert (`python3 tools/preview.py`, Fonts angenähert)
 
 Akzeptanz: **MANUELL PRÜFEN (offen)** – alle Screens auf dem Gerät ok.
 

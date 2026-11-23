@@ -70,6 +70,7 @@ pio device monitor -b 115200   # serielle Ausgabe
 pio test -e native             # Host-Tests ohne Hardware
 pio run -e ee04 -t buildfs     # LittleFS-Image (Web-UI wird vorher per tools/build_web.py gzip't)
 python3 tools/portal_mock.py   # Portal-UI ohne Hardware auf http://localhost:8080/
+python3 tools/preview.py       # Display-Vorschauen nach docs/previews/ (nach pio test -e native)
 ```
 Der native Test-Env braucht einen Host-C++-Compiler (gcc oder clang) im PATH.
 
