@@ -17,6 +17,8 @@
     }
     @if (device.transportKind === 'mock') {
       <z-badge zHeaderEnd status="info">Simulation</z-badge>
+    } @else if (device.transportKind === 'emu') {
+      <z-badge zHeaderEnd status="info">Emulator</z-badge>
     }
   </z-app-header>
 </div>

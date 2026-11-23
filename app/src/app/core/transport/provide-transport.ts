@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Wählt die Transportschicht: auf dem Handy (Capacitor nativ) Bluetooth LE, im Browser das
-// simulierte Gerät. Überschreiben mit ?transport=mock|ble oder localStorage "since.transport".
+// simulierte Gerät. Überschreiben mit ?transport=mock|ble|emu oder localStorage "since.transport".
+// Für emu: ?emu=http://localhost:8080 (Adresse von firmware/tools/emulator.py).
 
 import { Provider } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
@@ -8,15 +9,20 @@ import { Capacitor } from '@capacitor/core';
 import { applyJson, defaultConfig } from '../config/config';
 import { BleTransport } from './ble-transport';
 import { DEVICE_TRANSPORT, DeviceTransport } from './device-transport';
+import { EmuTransport } from './emu-transport';
 import { MockDevice } from './mock-device';
 import { MockTransport } from './mock-transport';
 
 export const TRANSPORT_STORAGE_KEY = 'since.transport';
+export const EMU_URL_STORAGE_KEY = 'since.emu';
+const DEFAULT_EMU_URL = 'http://localhost:8080';
 
 function readOverride(): string | null {
   try {
     const fromUrl = new URLSearchParams(globalThis.location?.search ?? '').get('transport');
-    if (fromUrl === 'mock' || fromUrl === 'ble') {
+    const emu = new URLSearchParams(globalThis.location?.search ?? '').get('emu');
+    if (emu) globalThis.localStorage?.setItem(EMU_URL_STORAGE_KEY, emu);
+    if (fromUrl === 'mock' || fromUrl === 'ble' || fromUrl === 'emu') {
       globalThis.localStorage?.setItem(TRANSPORT_STORAGE_KEY, fromUrl);
       return fromUrl;
     }
@@ -46,10 +52,22 @@ export function demoMockTransport(): MockTransport {
   });
 }
 
+function emuUrl(): string {
+  try {
+    return (globalThis.localStorage?.getItem(EMU_URL_STORAGE_KEY) ?? DEFAULT_EMU_URL).replace(
+      /\/$/,
+      '',
+    );
+  } catch {
+    return DEFAULT_EMU_URL;
+  }
+}
+
 export function createTransport(): DeviceTransport {
   const override = readOverride();
   if (override === 'mock') return demoMockTransport();
   if (override === 'ble') return new BleTransport();
+  if (override === 'emu') return new EmuTransport(emuUrl());
   return Capacitor.isNativePlatform() ? new BleTransport() : demoMockTransport();
 }
 
