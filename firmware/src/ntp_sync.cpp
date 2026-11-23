@@ -24,12 +24,17 @@ since::Epoch sync(const since::Config& cfg) {
   since::Epoch result = 0;
   if (WiFi.status() == WL_CONNECTED) {
     configTime(0, 0, "pool.ntp.org", "time.google.com");  // UTC
+    // sntp_get_sync_status() setzt COMPLETED beim Lesen zurück → nur einmal auswerten.
+    bool done = false;
     const unsigned long t0 = millis();
-    while (sntp_get_sync_status() != SNTP_SYNC_STATUS_COMPLETED && millis() - t0 < 10000) {
-      esp_task_wdt_reset();
-      delay(100);
+    while (!done && millis() - t0 < 10000) {
+      done = sntp_get_sync_status() == SNTP_SYNC_STATUS_COMPLETED;
+      if (!done) {
+        esp_task_wdt_reset();
+        delay(100);
+      }
     }
-    if (sntp_get_sync_status() == SNTP_SYNC_STATUS_COMPLETED) {
+    if (done) {
       timeval tv;
       gettimeofday(&tv, nullptr);
       if (tv.tv_sec > 1704067200 && hw::rtcSet(tv.tv_sec)) result = tv.tv_sec;
