@@ -30,3 +30,6 @@ firmware/data/*.gz
 # Lokale Agent-/Editor-Daten
 .claude/
 .playwright-mcp/
+
+# Python-Cache
+__pycache__/
