@@ -17,8 +17,11 @@ import { DeviceError } from './protocol/protocol';
 const ISSUE_TEXT: Record<string, string> = {
   'name:too_long': `Der Name hat mehr als ${MAX_NAME_CHARS} Zeichen. Kürze ihn.`,
   'name:invalid_utf8': 'Der Name enthält ungültige Zeichen. Gib ihn neu ein.',
+  'name:unsupported_char':
+    'Das Display kann nicht alle Zeichen darstellen (erlaubt: Buchstaben mit Umlauten, ß, Ziffern, Satzzeichen).',
   'occasion:too_long': `Der Anlass hat mehr als ${MAX_OCCASION_CHARS} Zeichen. Kürze ihn.`,
   'occasion:invalid_utf8': 'Der Anlass enthält ungültige Zeichen. Gib ihn neu ein.',
+  'occasion:unsupported_char': 'Das Display kann nicht alle Zeichen des Anlasses darstellen.',
   'event:invalid': 'Dieses Datum gibt es nicht. Prüfe Tag, Monat und Uhrzeit (Jahr 1900 bis 2999).',
   'tz:too_long': `Die Zeitzone ist länger als ${MAX_TZ_BYTES} Bytes. Wähle eine Vorgabe.`,
   'tz:invalid': 'Das ist keine gültige POSIX-Zeitzone. Beispiel: CET-1CEST,M3.5.0,M10.5.0/3.',
@@ -36,6 +39,7 @@ const CODE_TEXT: Record<string, string> = {
   too_long: 'Der Wert ist zu lang.',
   invalid: 'Der Wert ist ungültig.',
   invalid_utf8: 'Der Wert enthält ungültige Zeichen.',
+  unsupported_char: 'Diese Zeichen kann das Display nicht darstellen.',
   out_of_range: 'Der Wert liegt außerhalb des erlaubten Bereichs.',
   length: 'Die Länge passt nicht.',
   requires_wifi: 'Dafür braucht das Gerät ein WLAN.',

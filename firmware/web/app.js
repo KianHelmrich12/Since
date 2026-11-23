@@ -4,7 +4,8 @@ const f = $('#f');
 const MSG = {
   too_long: 'zu lang', invalid: 'ungültig', invalid_utf8: 'ungültige Zeichen',
   out_of_range: '10–1440 Minuten', length: '8–63 Zeichen oder leer',
-  requires_wifi: 'braucht eine SSID', wrong_type: 'falscher Typ'
+  requires_wifi: 'braucht eine SSID', wrong_type: 'falscher Typ',
+  unsupported_char: 'Zeichen kann das Display nicht darstellen'
 };
 const FIELD = {
   name: 'name', occasion: 'occasion', event: 'date', tz: 'tz',

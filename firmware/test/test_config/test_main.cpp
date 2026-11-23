@@ -172,6 +172,17 @@ static void test_name_length_counts_codepoints() {
   TEST_ASSERT_EQUAL_STRING("invalid_utf8", validate(c)[0].code.c_str());
 }
 
+static void test_displayable_chars() {
+  TEST_ASSERT_TRUE(isDisplayable("Jörg & Änne · ß"));
+  TEST_ASSERT_TRUE(isDisplayable("Zoë »Mila«"));
+  TEST_ASSERT_FALSE(isDisplayable("Łukasz"));             // U+0141, nicht Latin-1
+  TEST_ASSERT_FALSE(isDisplayable("Mila \xF0\x9F\x8E\x82"));  // Emoji
+  TEST_ASSERT_FALSE(isDisplayable("a\tb"));              // Steuerzeichen
+  Config c = defaultConfig();
+  const ConfigResult r = applyJson("{\"name\":\"Łukasz\"}", &c);
+  TEST_ASSERT_TRUE(hasIssue(r, "name", "unsupported_char"));
+}
+
 static void test_utf8_length() {
   TEST_ASSERT_EQUAL(0, utf8Length(""));
   TEST_ASSERT_EQUAL(4, utf8Length("Jörg"));
@@ -227,6 +238,7 @@ int main(int, char**) {
   RUN_TEST(test_validation_issue_fields);
   RUN_TEST(test_interval_ignored_in_auto_mode);
   RUN_TEST(test_name_length_counts_codepoints);
+  RUN_TEST(test_displayable_chars);
   RUN_TEST(test_utf8_length);
   RUN_TEST(test_iso_parse_format);
   RUN_TEST(test_wifi_password_follows_ssid);

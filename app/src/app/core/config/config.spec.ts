@@ -179,8 +179,10 @@ describe('config', () => {
     c.name = '\uD800';
     expect(validate(c)[0].code).toBe('invalid_utf8');
     c.name = '';
-    c.occasion = '🎂'.repeat(64);
+    c.occasion = 'ß'.repeat(64); // 128 Bytes, aber 64 Zeichen
     expect(validate(c)).toEqual([]);
+    c.occasion = '🎂'; // Emoji kann das Display nicht darstellen
+    expect(validate(c)).toEqual([{ field: 'occasion', code: 'unsupported_char' }]);
   });
 
   it('utf8Length', () => {
@@ -224,5 +226,12 @@ describe('config', () => {
     c = applyJson('{"wifi":{"password":"geheim123"}}', c).config!;
     c = applyJson('{"wifi":{"password":""}}', c).config!;
     expect(c.wifiPassword).toBe('');
+  });
+
+  it('rejects characters the display fonts cannot show', () => {
+    const r = applyJson('{"name":"Łukasz"}', defaultConfig());
+    expect(r.status).toBe('invalid');
+    expect(r.issues).toContainEqual({ field: 'name', code: 'unsupported_char' });
+    expect(applyJson('{"name":"Jörg · Zoë"}', defaultConfig()).status).toBe('ok');
   });
 });

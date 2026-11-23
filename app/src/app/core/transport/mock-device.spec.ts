@@ -127,7 +127,7 @@ describe('MockTransport', () => {
     await t.connect('mock:since-AB12', () => undefined);
     await expect(t.request('getInfo')).resolves.toMatchObject({ name: 'since-AB12', proto: 1 });
     const cfg = await t.request('setConfig', {
-      data: { name: 'Jörg & Änne', occasion: 'seit eurer Hochzeit 💍', event: '2020-02-29T00:00' },
+      data: { name: 'Jörg & Änne', occasion: 'seit eurer Hochzeit »Ja«', event: '2020-02-29T00:00' },
     });
     expect(cfg.name).toBe('Jörg & Änne');
     expect(cfg.event).toBe('2020-02-29T00:00');
