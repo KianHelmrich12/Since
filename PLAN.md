@@ -12,10 +12,10 @@ Schritte mit echter Hardware sind als **MANUELL PRÜFEN** markiert.
 Akzeptanz: `pio run -e ee04` und `pio test -e native` laufen grün.
 
 ## Phase 1 – Zeitrechnung (since_core)
-- [ ] Kalenderdifferenz Ereignis → jetzt: Jahre, Monate, Tage, Stunden, Minuten + Gesamttage/-wochen
-- [ ] Randfälle: Monatsende (31.01. + 1 Monat), Geburt am 29.02., Sommer-/Winterzeit-Wechsel, Ereignis in der Zukunft (Countdown)
-- [ ] Deutsche Formatierung mit Singular/Plural („1 Jahr“, „2 Jahre“), Nullwerte ausblenden
-- [ ] Meilensteine erkennen: Geburtstag, 100./1000. Tag, Monatstag
+- [x] Kalenderdifferenz Ereignis → jetzt: Jahre, Monate, Tage, Stunden, Minuten + Gesamttage/-wochen
+- [x] Randfälle: Monatsende (31.01. + 1 Monat), Geburt am 29.02., Sommer-/Winterzeit-Wechsel, Ereignis in der Zukunft (Countdown)
+- [x] Deutsche Formatierung mit Singular/Plural („1 Jahr“, „2 Jahre“), Nullwerte ausblenden
+- [x] Meilensteine erkennen: Geburtstag, 100./1000. Tag, Monatstag
 
 Akzeptanz: mindestens 30 Unit-Tests grün, inkl. aller Randfälle.
 
