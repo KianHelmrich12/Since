@@ -1,0 +1,62 @@
+@if (device.connected()) {
+  <z-page-header title="Gerät" [sub]="'Verbunden mit ' + (device.info()?.name ?? '')">
+    <button zBtn="secondary" type="button" (click)="disconnect()">Trennen</button>
+  </z-page-header>
+
+  <z-panel title="Verbundenes Gerät" [headingLevel]="2">
+    <a zPanelActions routerLink="/einstellungen">Zu den Einstellungen</a>
+    <z-spec-list [items]="infoItems()" />
+  </z-panel>
+} @else {
+  <z-page-header title="Gerät" sub="Suche dein since-Gerät und verbinde dich per Bluetooth.">
+    <button zBtn="primary" type="button" [loading]="device.scanning()" (click)="scan()">
+      Suchen
+    </button>
+  </z-page-header>
+
+  @if (error()) {
+    <z-alert status="danger" icon="error" title="Verbinden hat nicht geklappt">
+      {{ error() }}
+    </z-alert>
+  } @else {
+    <z-alert status="info" icon="info" title="Passkey vom Display eingeben">
+      Starte am Gerät den Setup-Modus mit einem kurzen Druck auf KEY0. Beim ersten Verbinden fragt
+      Android nach einem sechsstelligen Code: Er steht auf dem Display.
+    </z-alert>
+  }
+
+  <z-panel title="Gefundene Geräte" [headingLevel]="2" flush [busy]="device.scanning()">
+    @if (device.found().length > 0) {
+      <z-rows columns="minmax(0, 1fr) auto">
+        @for (d of device.found(); track d.id) {
+          <div zRow>
+            <z-row-main [title]="d.name" [meta]="meta(d)" />
+            <button
+              zBtn="secondary"
+              size="sm"
+              type="button"
+              [loading]="connectingId() === d.id"
+              [disabled]="connectingId() !== null && connectingId() !== d.id"
+              (click)="connect(d)"
+            >
+              Verbinden
+            </button>
+          </div>
+        }
+      </z-rows>
+    } @else if (device.scanning()) {
+      <z-empty-state title="Suche läuft">
+        Die Suche dauert bis zu 8 Sekunden. Halte das Handy in die Nähe des Geräts.
+      </z-empty-state>
+    } @else {
+      <z-empty-state [title]="searched() ? 'Kein Gerät gefunden' : 'Noch nicht gesucht'">
+        @if (searched()) {
+          Prüfe, ob der Setup-Modus läuft: Das Display zeigt dann den Passkey. Suche danach erneut.
+        } @else {
+          Die Suche findet Geräte, die gerade im Setup-Modus sind.
+        }
+        <button zEmptyAction zBtn="secondary" type="button" (click)="scan()">Suchen</button>
+      </z-empty-state>
+    }
+  </z-panel>
+}

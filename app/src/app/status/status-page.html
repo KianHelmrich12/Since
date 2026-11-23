@@ -1,0 +1,47 @@
+<z-page-header title="Status" [sub]="device.info()?.name ?? ''">
+  <button zBtn="secondary" type="button" [loading]="loading()" (click)="refresh()">
+    Aktualisieren
+  </button>
+</z-page-header>
+
+@if (error()) {
+  <z-alert status="danger" icon="error" title="Das Gerät hat nicht geantwortet">
+    {{ error() }}
+  </z-alert>
+} @else if (device.status()?.rtcLostPower) {
+  <z-alert status="warning" icon="schedule" title="Die RTC hat die Uhrzeit verloren">
+    Stelle die Uhrzeit unter „Uhrzeit“ neu ein.
+  </z-alert>
+}
+
+<z-panel title="Gerät" [headingLevel]="2" [busy]="loading() && device.status() === null">
+  @if (device.status(); as s) {
+    <div class="z-stack">
+      <div class="z-cluster">
+        @if (s.rtcOk && !s.rtcLostPower) {
+          <z-badge status="success" dot>Uhr läuft</z-badge>
+        } @else {
+          <z-badge status="warning" dot>Uhr prüfen</z-badge>
+        }
+        @if (s.charging) {
+          <z-badge status="info" dot>Lädt</z-badge>
+        }
+      </div>
+      <z-spec-list [items]="items()" />
+    </div>
+  }
+</z-panel>
+
+<z-panel title="Setup-Modus" [headingLevel]="2">
+  <div class="z-stack">
+    <p class="z-muted app-note">
+      Nach „Setup beenden“ schaltet das Gerät Bluetooth und Hotspot aus und zeigt die neuen Werte.
+    </p>
+    <div class="z-cluster">
+      <button zBtn="secondary" type="button" (click)="neuZeichnen()">Display neu zeichnen</button>
+      <button zBtn="primary" type="button" [loading]="ending()" (click)="setupBeenden()">
+        Setup beenden
+      </button>
+    </div>
+  </div>
+</z-panel>
