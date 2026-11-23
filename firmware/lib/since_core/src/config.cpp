@@ -90,6 +90,25 @@ int utf8Length(const std::string& s) {
   return count;
 }
 
+bool isDisplayable(const std::string& s) {
+  // Die Display-Fonts (U8g2 *_tf) decken Latin-1 ab: U+0020–U+007E und U+00A0–U+00FF.
+  for (size_t i = 0; i < s.size();) {
+    const unsigned char c = static_cast<unsigned char>(s[i]);
+    uint32_t cp;
+    if (c < 0x80) {
+      cp = c;
+      i += 1;
+    } else if ((c >> 5) == 0x6 && i + 1 < s.size()) {
+      cp = ((c & 0x1F) << 6) | (static_cast<unsigned char>(s[i + 1]) & 0x3F);
+      i += 2;
+    } else {
+      return false;  // 3/4-Byte-Folgen liegen jenseits von U+07FF, also außerhalb Latin-1
+    }
+    if (cp < 0x20 || (cp >= 0x7F && cp < 0xA0) || cp > 0xFF) return false;
+  }
+  return true;
+}
+
 bool parseIsoLocal(const std::string& s, DateTime* out) {
   // Streng: nur Ziffern an festen Positionen ("YYYY-MM-DDTHH:MM" oder mit ":SS"),
   // keine Vorzeichen oder Leerzeichen (gleiche Regel wie der TypeScript-Port).
@@ -135,11 +154,13 @@ std::vector<ValidationIssue> validate(const Config& c) {
   const int nameLen = utf8Length(c.name);
   if (nameLen < 0) issues.push_back({"name", "invalid_utf8"});
   else if (static_cast<size_t>(nameLen) > kMaxNameChars) issues.push_back({"name", "too_long"});
+  else if (!isDisplayable(c.name)) issues.push_back({"name", "unsupported_char"});
 
   const int occLen = utf8Length(c.occasion);
   if (occLen < 0) issues.push_back({"occasion", "invalid_utf8"});
   else if (static_cast<size_t>(occLen) > kMaxOccasionChars)
     issues.push_back({"occasion", "too_long"});
+  else if (!isDisplayable(c.occasion)) issues.push_back({"occasion", "unsupported_char"});
 
   if (c.hasEvent && !isValidDateTime(c.event)) issues.push_back({"event", "invalid"});
 

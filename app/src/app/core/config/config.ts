@@ -149,15 +149,26 @@ export function formatIsoLocal(dt: DateTime): string {
   return dt.second ? `${base}:${pad(dt.second)}` : base;
 }
 
+/** Alle Zeichen in den Display-Fonts vorhanden? (druckbares Latin-1, wie die Firmware) */
+export function isDisplayable(s: string): boolean {
+  for (const ch of s) {
+    const cp = ch.codePointAt(0)!;
+    if (cp < 0x20 || (cp >= 0x7f && cp < 0xa0) || cp > 0xff) return false;
+  }
+  return true;
+}
+
 export function validate(c: Config): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
   const nameLen = utf8Length(c.name);
   if (nameLen < 0) issues.push({ field: 'name', code: 'invalid_utf8' });
   else if (nameLen > MAX_NAME_CHARS) issues.push({ field: 'name', code: 'too_long' });
+  else if (!isDisplayable(c.name)) issues.push({ field: 'name', code: 'unsupported_char' });
 
   const occLen = utf8Length(c.occasion);
   if (occLen < 0) issues.push({ field: 'occasion', code: 'invalid_utf8' });
   else if (occLen > MAX_OCCASION_CHARS) issues.push({ field: 'occasion', code: 'too_long' });
+  else if (!isDisplayable(c.occasion)) issues.push({ field: 'occasion', code: 'unsupported_char' });
 
   if (c.event !== null && !isValidDateTime(c.event))
     issues.push({ field: 'event', code: 'invalid' });

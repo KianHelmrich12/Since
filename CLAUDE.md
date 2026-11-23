@@ -72,7 +72,9 @@ pio run -e ee04 -t buildfs     # LittleFS-Image (Web-UI wird vorher per tools/bu
 python3 tools/portal_mock.py   # Portal-UI ohne Hardware auf http://localhost:8080/
 python3 tools/preview.py       # Display-Vorschauen nach docs/previews/ (nach pio test -e native)
 python3 tools/sim.py --config ../shared/fixtures/config/valid/full.json --days 7 --out sim-out
-                               # Geräte-Emulator: Weckzyklen im Zeitraffer, Bilder, Akkulaufzeit
+                               # Zeitraffer-Simulation: Weckzyklen, Bilder, Akkulaufzeit
+python3 tools/emulator.py      # virtuelles Gerät im Browser (http://localhost:8080/), nach pio run -e ee04
+python3 tools/emulator_check.py  # automatischer Emulator-Test (Fonts + Durchlauf), läuft in der CI
 ```
 Der native Test-Env braucht einen Host-C++-Compiler (gcc oder clang) im PATH.
 
@@ -97,6 +99,8 @@ npx cap sync android && (cd android && ./gradlew assembleDebug)
   (Default `CET-1CEST,M3.5.0,M10.5.0/3`).
 - Alles Testbare gehört in `since_core` und bekommt Tests. Die Entscheidungslogik eines
   Weckzyklus liegt in `since::runCycle` und wird von Firmware und Emulator gemeinsam genutzt.
+- Gezeichnet wird nur über `src/render.cpp` (Gerät und Emulator). Neue Texte nur mit Zeichen,
+  die alle Fonts haben (druckbares Latin-1, geprüft von `tools/emulator_check.py`).
 - Eigener Code kompiliert ohne Warnungen (`-Werror` für src/ und native). `since_core` darf weder Arduino.h
   noch ESP-IDF-Header einbinden.
 - Hardware-Schritte als **MANUELL PRÜFEN** kennzeichnen, nie Erfolg annehmen.

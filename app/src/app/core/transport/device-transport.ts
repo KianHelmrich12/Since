@@ -13,10 +13,10 @@ export interface FoundDevice {
 
 /**
  * Verbindung zu einem since-Gerät. BleTransport spricht echtes Bluetooth LE,
- * MockTransport simuliert ein Gerät im Browser.
+ * MockTransport simuliert ein Gerät im Browser, EmuTransport spricht mit dem Geräte-Emulator.
  */
 export interface DeviceTransport {
-  readonly kind: 'ble' | 'mock';
+  readonly kind: 'ble' | 'mock' | 'emu';
 
   /** Sucht nach Geräten mit der since-Service-UUID, bis `durationMs` um ist oder stopScan(). */
   scan(onFound: (device: FoundDevice) => void, durationMs: number): Promise<void>;

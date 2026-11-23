@@ -4,6 +4,17 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
+### Added
+- Geräte-Emulator im Browser (`tools/emulator.py`):
+  - echtes Firmware-Rendering mit den echten Fonts, Tasten, Zeitraffer, Akku, RTC-Verlust
+  - Portal und BLE-RPC für die App (`?transport=emu`)
+- Automatischer Emulator-Test mit Prüfung der Zeichenabdeckung der Fonts (CI).
+- Validierung: Name und Anlass nur mit Zeichen, die das Display darstellen kann (`unsupported_char`).
+
+### Changed
+- Rendering nach `src/render.cpp` ausgelagert (gemeinsam für Gerät und Emulator).
+- Display-Fonts FreeUniversal statt logisoso: logisoso enthält kein „·“ (mit dem Emulator gefunden).
+
 ### Fixed
 - NTP-Sync: Der Sync-Status wurde doppelt gelesen, deshalb wurde die RTC nie gestellt.
 - Setup-Ende: Antworten werden noch ausgeliefert, BLE-Verbindungen sauber getrennt.

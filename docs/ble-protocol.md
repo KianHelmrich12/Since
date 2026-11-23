@@ -91,8 +91,8 @@ Maßgeblich sind `firmware/lib/since_core/src/config.h` und die Fixtures in `sha
 | Feld | Typ | Default | Regeln |
 |---|---|---|---|
 | `schemaVersion` | int | 1 | eine neuere Version wird abgelehnt |
-| `name` | string | `""` | ≤ 32 Zeichen |
-| `occasion` | string | `""` | ≤ 64 Zeichen |
+| `name` | string | `""` | ≤ 32 Zeichen, nur druckbares Latin-1 (`unsupported_char`) |
+| `occasion` | string | `""` | ≤ 64 Zeichen, nur druckbares Latin-1 |
 | `event` | string | `""` | `YYYY-MM-DDTHH:MM[:SS]` in Lokalzeit; `""` = kein Ereignis |
 | `tz` | string | `CET-1CEST,M3.5.0,M10.5.0/3` | POSIX-TZ, ≤ 64 Bytes |
 | `layout` | `"standard"` \| `"minimal"` | `standard` | |

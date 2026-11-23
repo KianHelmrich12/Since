@@ -82,6 +82,9 @@ std::string toJson(const Config& c, bool includeSecrets);
 bool parseIsoLocal(const std::string& s, DateTime* out);
 std::string formatIsoLocal(const DateTime& dt);
 
+// true, wenn alle Zeichen in den Display-Fonts vorhanden sind (druckbares Latin-1)
+bool isDisplayable(const std::string& s);
+
 // Anzahl Unicode-Codepoints; -1 bei ungültigem UTF-8
 int utf8Length(const std::string& s);
 
