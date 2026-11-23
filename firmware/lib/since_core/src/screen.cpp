@@ -68,7 +68,7 @@ ScreenModel buildScreen(const ScreenInputs& in) {
     m.title = "Uhrzeit einstellen";
     m.subtitle = "Die Uhr hat ihre Zeit verloren.";
     m.line1 = "Taste 1 drücken und im Portal";
-    m.line2 = "„Uhrzeit vom Handy übernehmen“ wählen.";
+    m.line2 = "»Uhrzeit vom Handy übernehmen« wählen.";
     return m;
   }
   if (!cfg.hasEvent) {
