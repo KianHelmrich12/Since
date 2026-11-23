@@ -44,6 +44,19 @@ Die Display-Bilder erzeugt der Host-Renderer, Fotos vom echten Gerät folgen.
 
 Verdrahtung: [hardware/wiring.md](hardware/wiring.md) · Stückliste: [hardware/BOM.md](hardware/BOM.md) · Pinbelegung mit Quellen: [hardware/ee04-pinout.md](hardware/ee04-pinout.md) · Strom: [docs/power.md](docs/power.md)
 
+## Ohne Hardware ausprobieren: Geräte-Emulator
+```sh
+cd firmware
+pio run -e ee04                 # einmalig: Bibliotheken laden
+python3 tools/emulator.py       # → http://localhost:8080/
+```
+Im Browser läuft ein virtuelles since-Gerät:
+- **Display:** echtes Firmware-Rendering mit den echten Fonts.
+- **Bedienung:** Tasten, Zeitraffer, Akku, USB, Knopfzelle entfernen, Internet für den NTP-Sync.
+- **Setup-Modus:** das echte Portal. Die App verbindet sich mit `?transport=emu&emu=http://localhost:8080`.
+
+Gerät und Emulator nutzen dieselbe Logik (`since_core`) und dasselbe Rendering (`src/render.cpp`).
+
 ## Firmware bauen
 Voraussetzung: [PlatformIO Core](https://docs.platformio.org/en/latest/core/installation/index.html)
 und für die Host-Tests ein C++-Compiler (gcc oder clang).
