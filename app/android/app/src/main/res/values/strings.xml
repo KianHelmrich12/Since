@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">since</string>
+    <string name="title_activity_main">since</string>
+    <string name="package_name">de.since.app</string>
+    <string name="custom_url_scheme">de.since.app</string>
+</resources>
