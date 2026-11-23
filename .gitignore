@@ -26,3 +26,6 @@ secrets.h
 
 # Generierte Portal-Assets (tools/build_web.py)
 firmware/data/*.gz
+
+# Lokale Agent-/Editor-Daten
+.claude/
