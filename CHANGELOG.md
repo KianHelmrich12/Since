@@ -4,6 +4,11 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
+
+## [0.9.0] – 2026-11-23
+Release-Kandidat: Software vollständig, Hardware-Abnahme (docs/abnahme.md) steht aus.
+Nach bestandener Abnahme folgt 1.0.0.
+
 ### Added
 - Repo-Grundgerüst, PlatformIO-Projekt mit `ee04`- und `native`-Env, Lizenzdateien.
 - since_core: Kalenderdifferenz mit Countdown, POSIX-TZ, deutsche Formatierung, Meilensteine.

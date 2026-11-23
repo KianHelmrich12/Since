@@ -5,7 +5,7 @@ Messwerte, serielle Ausgabe) zurückmelden. Erst danach wird `v1.0.0` getaggt.
 
 ## Phase 3 – Bring-up
 - [ ] Verdrahtung nach [hardware/wiring.md](../hardware/wiring.md) aufgebaut, Umbauten am ZS042 erledigt
-- [ ] Nach dem Flashen zeigt das Display „Willkommen!“. Serielle Ausgabe: `since 0.0.1, wake=0`
+- [ ] Nach dem Flashen zeigt das Display „Willkommen!“. Serielle Ausgabe: `since 0.9.0, wake=0`
 - [ ] Panel-Controller passt (UC8179 / GxEPD2_750_GDEY075T7). Falls das Bild gestört ist: Aufdruck des Panels melden
 - [ ] RTC: Uhrzeit im Portal stellen, USB und Akku 1 min trennen, wieder anschließen → Status zeigt die richtige Uhrzeit, kein „Uhrzeit einstellen“
 - [ ] Akkuspannung im Portal (Status) mit dem Multimeter vergleichen (Abweichung < 50 mV, sonst Faktor kalibrieren)

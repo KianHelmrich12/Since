@@ -3,6 +3,6 @@
 
 namespace since {
 
-const char* coreVersion() { return "0.0.0"; }
+const char* coreVersion() { return "0.9.0"; }
 
 }  // namespace since
