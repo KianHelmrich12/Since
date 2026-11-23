@@ -20,10 +20,10 @@ Akzeptanz: `pio run -e ee04` und `pio test -e native` laufen grün.
 Akzeptanz: mindestens 30 Unit-Tests grün, inkl. aller Randfälle.
 
 ## Phase 2 – Konfiguration
-- [ ] Config: Name, Anlass-Text, Ereignis (lokales Datum + Uhrzeit), TZ, Layout, Update-Intervall, optional WLAN, NTP an/aus, Schema-Version
-- [ ] JSON (de)serialisieren + validieren in since_core, Persistenz via Preferences in src/
-- [ ] Sinnvolle Defaults und Migration bei neuer Schema-Version
-- [ ] JSON-Fixtures (gültig/ungültig, alte Schema-Versionen) in `shared/fixtures/`, die später auch die App für Kontrakttests nutzt
+- [x] Config: Name, Anlass-Text, Ereignis (lokales Datum + Uhrzeit), TZ, Layout, Update-Intervall, optional WLAN, NTP an/aus, Schema-Version
+- [x] JSON (de)serialisieren + validieren in since_core, Persistenz via Preferences in src/
+- [x] Sinnvolle Defaults und Migration bei neuer Schema-Version
+- [x] JSON-Fixtures (gültig/ungültig, alte Schema-Versionen) in `shared/fixtures/`, die später auch die App für Kontrakttests nutzt
 
 Akzeptanz: Tests für Validierung und Round-Trip grün.
 
