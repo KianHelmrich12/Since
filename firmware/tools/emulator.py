@@ -77,7 +77,7 @@ def build():
     objs = []
     for f in c:
         o = os.path.join(BUILD, os.path.basename(f) + ".o")
-        subprocess.run([cc, "-O2", "-fPIC", "-w", "-c", f, "-o", o] + inc, check=True)
+        subprocess.run([cc, "-std=gnu11", "-O2", "-fPIC", "-w", "-c", f, "-o", o] + inc, check=True)  # C-Standard fest: qrcode.h definiert bool selbst (in C23 ein Schlüsselwort)
         objs.append(o)
     subprocess.run([cxx, "-std=c++17", "-O2", "-fPIC", "-shared", "-w", "-o", so] + inc + cpp + objs, check=True)
     return so
