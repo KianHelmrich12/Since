@@ -3,6 +3,7 @@
 #pragma once
 
 #include "civil.h"
+#include "config.h"
 #include "elapsed.h"
 #include "format_de.h"
 #include "milestones.h"
