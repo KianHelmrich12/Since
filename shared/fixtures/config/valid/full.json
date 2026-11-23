@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "name": "Mila",
+  "occasion": "seit deiner Geburt",
+  "event": "2023-03-12T08:15",
+  "tz": "CET-1CEST,M3.5.0,M10.5.0/3",
+  "layout": "standard",
+  "showTime": false,
+  "update": { "mode": "auto", "intervalMinutes": 60 },
+  "wifi": { "ssid": "Heimnetz", "password": "geheim123" },
+  "ntp": true
+}
