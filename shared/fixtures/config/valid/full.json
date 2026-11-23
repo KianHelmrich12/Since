@@ -8,5 +8,6 @@
   "showTime": false,
   "update": { "mode": "auto", "intervalMinutes": 60 },
   "wifi": { "ssid": "Heimnetz", "password": "geheim123" },
-  "ntp": true
+  "ntp": true,
+  "portalSecure": false
 }

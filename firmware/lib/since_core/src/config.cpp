@@ -226,6 +226,7 @@ ConfigResult applyJson(const std::string& json, Config* cfg) {
   }
 
   r.boolean(root["ntp"], "ntp", &next.ntp);
+  r.boolean(root["portalSecure"], "portalSecure", &next.portalSecure);
 
   if (result.status == ConfigStatus::kWrongType) return result;
   if (!result.issues.empty()) {
@@ -259,6 +260,7 @@ std::string toJson(const Config& c, bool includeSecrets) {
   if (includeSecrets) wifi["password"] = c.wifiPassword;
   else wifi["passwordSet"] = !c.wifiPassword.empty();
   doc["ntp"] = c.ntp;
+  doc["portalSecure"] = c.portalSecure;
   std::string out;
   serializeJson(doc, out);
   return out;

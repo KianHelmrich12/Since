@@ -42,6 +42,7 @@ struct Config {
   std::string wifiSsid;
   std::string wifiPassword;  // nur im NVS, nie über die API ausgegeben
   bool ntp = false;
+  bool portalSecure = true;  // Hotspot mit zufälligem WPA2-Passwort
 };
 
 Config defaultConfig();

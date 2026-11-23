@@ -50,6 +50,7 @@ static void test_defaults_are_valid() {
   TEST_ASSERT_EQUAL_STRING(kDefaultTz, c.tz.c_str());
   TEST_ASSERT_TRUE(c.updateMode == UpdateMode::kAuto);
   TEST_ASSERT_FALSE(c.ntp);
+  TEST_ASSERT_TRUE(c.portalSecure);
 }
 
 static void test_valid_fixtures_apply() {
@@ -84,6 +85,7 @@ static void test_full_fixture_values() {
   TEST_ASSERT_EQUAL_STRING("Heimnetz", c.wifiSsid.c_str());
   TEST_ASSERT_EQUAL_STRING("geheim123", c.wifiPassword.c_str());
   TEST_ASSERT_TRUE(c.ntp);
+  TEST_ASSERT_FALSE(c.portalSecure);
 }
 
 static void test_round_trip_with_secrets() {
