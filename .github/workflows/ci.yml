@@ -59,6 +59,11 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
+      # Cacht Gradle-Abhängigkeiten zwischen Läufen; ohne Cache lädt jeder Lauf alles neu
+      # von Maven Central (führte zu 429 Too Many Requests).
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
       - name: Debug-APK bauen
         run: |
           npx cap sync android
