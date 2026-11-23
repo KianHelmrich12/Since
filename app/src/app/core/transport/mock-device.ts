@@ -117,8 +117,14 @@ export class MockDevice {
       }
       case 'setTime': {
         const epoch = r['epoch'];
-        if (typeof epoch !== 'number' || !Number.isInteger(epoch) || epoch < 0) {
-          return fail('wrong_type');
+        // Wie die Firmware (since_core/api.cpp): Ganzzahl 2024-01-01 … 2100-01-01, sonst bad_request
+        if (
+          typeof epoch !== 'number' ||
+          !Number.isInteger(epoch) ||
+          epoch < 1704067200 ||
+          epoch > 4102444800
+        ) {
+          return fail('bad_request');
         }
         this.rtcOffsetS = epoch - Math.floor(this.now() / 1000);
         return ok({ epoch });

@@ -76,7 +76,12 @@ describe('MockDevice', () => {
     expect(after.nowUtc).toBe(1_795_000_005);
     expect(d.handle('{"id":4,"op":"setTime","epoch":"jetzt"}')).toMatchObject({
       ok: false,
-      error: 'wrong_type',
+      error: 'bad_request',
+    });
+    // außerhalb 2024–2100, wie die Firmware
+    expect(d.handle('{"id":5,"op":"setTime","epoch":5}')).toMatchObject({
+      ok: false,
+      error: 'bad_request',
     });
   });
 
