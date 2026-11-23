@@ -4,10 +4,10 @@ Jede Phase beginnt erst, wenn die Akzeptanzkriterien der vorherigen erfüllt sin
 Schritte mit echter Hardware sind als **MANUELL PRÜFEN** markiert.
 
 ## Phase 0 – Repo-Setup
-- [ ] Struktur wie in CLAUDE.md, .gitignore, .editorconfig, README-Gerüst
-- [ ] Lizenzdateien: GPL-3.0-or-later (Root), CERN-OHL-S-2.0 (hardware/), CC BY-SA 4.0 (enclosure/)
-- [ ] platformio.ini mit ee04 (XIAO ESP32-S3, Arduino) und native (Unity)
-- [ ] Hello-World mit serieller Ausgabe, ein Dummy-Test
+- [x] Struktur wie in CLAUDE.md, .gitignore, .editorconfig, README-Gerüst
+- [x] Lizenzdateien: GPL-3.0-or-later (Root), CERN-OHL-S-2.0 (hardware/), CC BY-SA 4.0 (enclosure/)
+- [x] platformio.ini mit ee04 (XIAO ESP32-S3, Arduino) und native (Unity)
+- [x] Hello-World mit serieller Ausgabe, ein Dummy-Test
 
 Akzeptanz: `pio run -e ee04` und `pio test -e native` laufen grün.
 
