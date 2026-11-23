@@ -15,7 +15,7 @@ namespace since {
 enum class ScreenKind {
   kStandard,
   kMinimal,
-  kMilestone,      // Standard + Banner (Geburtstag, Tag 1000, Monatstag)
+  kMilestone,      // Standard + Banner (Geburtstag, Tag 1000, Monatstag); Minimal behält kMinimal + banner
   kBatteryEmpty,   // „Bitte laden“
   kSetup,          // Hotspot-Daten + QR + BLE-Passkey
   kSetTime,        // RTC hat Strom verloren

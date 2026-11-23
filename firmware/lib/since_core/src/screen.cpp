@@ -113,7 +113,8 @@ ScreenModel buildScreen(const ScreenInputs& in) {
     // Monatstage nur in den ersten zwei Jahren (Babyzeit), sonst zu häufig
     if (ms.kind == MilestoneKind::kMonthDay && ms.value >= 24) ms = Milestone();
     if (ms.kind != MilestoneKind::kNone) {
-      m.kind = ScreenKind::kMilestone;
+      // Das Banner gibt es in beiden Layouts; das Minimal-Layout bleibt erhalten.
+      if (m.kind == ScreenKind::kStandard) m.kind = ScreenKind::kMilestone;
       m.banner = milestoneBanner(ms, cfg);
     }
   }

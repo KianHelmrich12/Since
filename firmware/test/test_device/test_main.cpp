@@ -138,6 +138,10 @@ static void test_screen_birthday_and_minimal() {
   m = buildScreen(inputs(c, local(2026, 3, 12, 9, 0)));
   TEST_ASSERT_EQUAL_STRING("Heute: 3 Jahre!", m.banner.c_str());
   c.layout = Layout::kMinimal;
+  // Minimal-Layout am Jahrestag: bleibt Minimal, bekommt aber das Banner
+  m = buildScreen(inputs(c, local(2026, 3, 12, 9, 0)));
+  TEST_ASSERT_TRUE(m.kind == ScreenKind::kMinimal);
+  TEST_ASSERT_EQUAL_STRING("Heute: 3 Jahre!", m.banner.c_str());
   m = buildScreen(inputs(c, local(2026, 3, 20, 9, 0)));
   TEST_ASSERT_TRUE(m.kind == ScreenKind::kMinimal);
   TEST_ASSERT_TRUE(m.line2.empty());
@@ -243,6 +247,39 @@ static void test_framing_errors() {
   TEST_ASSERT_TRUE(r2.tooLarge());
 }
 
+// --- Weck-Zyklus (gemeinsam mit dem Emulator)
+static void test_cycle_draws_only_on_change() {
+  CycleInputs ci;
+  ci.config = eventConfig({2023, 3, 12, 8, 15, 0});
+  ci.nowUtc = local(2026, 5, 26, 9, 0);
+  ci.batteryMv = 3900;
+  CycleResult r = runCycle(ci);
+  TEST_ASSERT_TRUE(r.draw);
+  ci.lastFingerprint = r.fingerprint;
+  ci.nowUtc = r.nextWakeUtc - 3600;  // gleicher Text
+  r = runCycle(ci);
+  TEST_ASSERT_FALSE(r.draw);
+  ci.forceRedraw = true;
+  TEST_ASSERT_TRUE(runCycle(ci).draw);
+}
+
+static void test_cycle_brownout_and_lost_power() {
+  CycleInputs ci;
+  ci.config = eventConfig({2023, 3, 12, 8, 15, 0});
+  ci.nowUtc = local(2026, 5, 26, 9, 0);
+  ci.batteryMv = 3900;
+  ci.brownout = true;
+  CycleResult r = runCycle(ci);
+  TEST_ASSERT_FALSE(r.draw);
+  TEST_ASSERT_TRUE(r.level == BatteryLevel::kCritical);
+  TEST_ASSERT_EQUAL_INT64(ci.nowUtc + kMaxSleepS, r.nextWakeUtc);
+  ci.brownout = false;
+  ci.rtcLostPower = true;
+  r = runCycle(ci);
+  TEST_ASSERT_TRUE(r.model.kind == ScreenKind::kSetTime);
+  TEST_ASSERT_EQUAL_INT64(ci.nowUtc + kMaxSleepS, r.nextWakeUtc);
+}
+
 int main(int, char**) {
   UNITY_BEGIN();
   RUN_TEST(test_battery_percent);
@@ -262,5 +299,7 @@ int main(int, char**) {
   RUN_TEST(test_random_credentials);
   RUN_TEST(test_framing_roundtrip);
   RUN_TEST(test_framing_errors);
+  RUN_TEST(test_cycle_draws_only_on_change);
+  RUN_TEST(test_cycle_brownout_and_lost_power);
   return UNITY_END();
 }
