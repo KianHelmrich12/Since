@@ -40,7 +40,7 @@ check_log() {
     fi
 }
 
-for part in front back stand text; do
+for part in front back stand text bay_test; do
     base="$OUT/since-$DISPLAY_SIZE-$part"
     for ext in stl 3mf; do
         log="build/since-$DISPLAY_SIZE-$part.$ext.log"

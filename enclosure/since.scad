@@ -16,7 +16,7 @@
 
 /* [Teil / Ansicht] */
 // Welches Teil gerendert/exportiert wird
-part = "all"; // [all, front, back, stand, text, standing]
+part = "all"; // [all, front, back, stand, text, bay_test, standing]
 // Displaygröße (Preset)
 display = "7.5"; // [7.5, 4.2]
 // Explosionsabstand in der Ansicht "all" (mm)
@@ -152,6 +152,13 @@ if (part == "front") {
 } else if (part == "back") {
     // Druckorientierung: Außenseite des Deckels auf dem Druckbett
     translate([0, 0, H + back_t]) rotate([180, 0, 0]) back_cover();
+} else if (part == "bay_test") {
+    // Probedruck: nur die Service-Mulde mit Platinensäulen (Passprobe für Taster/USB)
+    translate([0, 0, H + back_t]) rotate([180, 0, 0])
+        intersection() {
+            back_cover();
+            rbox(rect_grow([board_r[0], board_r[1], board_r[2] + 30, bay_r[3] + wall], 3), 0, depth + 1);
+        }
 } else if (part == "stand") {
     stand_print();
 } else if (part == "standing") {
