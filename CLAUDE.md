@@ -36,6 +36,10 @@ in `firmware/include/board_ee04.h`.
 - Kernlogik (Zeitrechnung, Formatierung, Config-Validierung) als hardwarefreie Bibliothek
   `since_core`, getestet mit `pio test -e native`
 - Gehäuse: OpenSCAD (parametrisch), Export STL/3MF für Bambu Studio
+- App (Phase 6b): Angular + zenit-ui (`@zenit-hosting/zenit-ui`, Alias `zenit-ui`) + Capacitor
+  (Android), BLE via `@capacitor-community/bluetooth-le`; Firmware-Seite NimBLE-Arduino.
+  BLE ist zusätzlich zum Portal und nur im Setup-Modus aktiv. Config-Schema wird von since_core
+  und App geteilt (`shared/fixtures/`).
 
 ## Repo-Struktur
 ```
@@ -51,7 +55,9 @@ since/
 │   └── test/              # Unity-Tests (native)
 ├── hardware/              # Verdrahtung, BOM · LICENSE: CERN-OHL-S-2.0
 ├── enclosure/             # OpenSCAD, STL/3MF · LICENSE: CC BY-SA 4.0
-└── docs/                  # Bauanleitung, Fotos, Strommessungen
+├── app/                   # Android-App: Angular + zenit-ui + Capacitor (Phase 6b)
+├── shared/fixtures/       # Config-JSON-Fixtures für Firmware- und App-Tests
+└── docs/                  # Bauanleitung, Fotos, Strommessungen, ble-protocol.md
 ```
 
 ## Befehle
@@ -64,6 +70,15 @@ pio device monitor -b 115200   # serielle Ausgabe
 pio test -e native             # Host-Tests ohne Hardware
 ```
 Der native Test-Env braucht einen Host-C++-Compiler (gcc oder clang) im PATH.
+
+App (ab Phase 6b, braucht Node LTS, JDK 21, Android SDK):
+```sh
+cd app
+npm ci
+npx ng test --watch=false      # Unit-Tests
+npx ng serve                   # Browser mit Mock-Gerät
+npx cap sync android && (cd android && ./gradlew assembleDebug)
+```
 
 ## Regeln
 - Commit-Nachrichten und Patches enthalten keinerlei Claude-Verweise
