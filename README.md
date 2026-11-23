@@ -29,6 +29,13 @@ und wird per Handy über einen eigenen Hotspot eingerichtet.
 | Taste 2 (KEY1) | Display neu zeichnen |
 | Taste 3 (KEY2) | Layout Standard ↔ Minimal |
 
+## Vorschau
+| Display (Standard) | Meilenstein | Portal | App |
+|---|---|---|---|
+| ![](docs/previews/display-standard.png) | ![](docs/previews/display-birthday.png) | ![](docs/previews/portal-settings.png) | ![](docs/previews/app-einstellungen.png) |
+
+Die Display-Bilder erzeugt der Host-Renderer, Fotos vom echten Gerät folgen.
+
 ## Hardware
 - Seeed XIAO ePaper Display Board EE04 (XIAO ESP32-S3 Plus)
 - 7,5″ E-Paper mono, 800×480, 24-Pin
@@ -54,7 +61,15 @@ python3 tools/portal_mock.py   # Portal-UI ohne Gerät: http://localhost:8080/
 Ohne Toolchain: Nach einem Release lässt sich die Firmware im Browser installieren (Chrome/Edge), über den Web-Flasher auf GitHub Pages ([docs/flasher/](docs/flasher/)).
 
 ## Gehäuse
-Parametrisches OpenSCAD-Modell für Bambu-Drucker in [enclosure/](enclosure/) (folgt).
+Parametrisches OpenSCAD-Modell für 7,5″ und 4,2″ mit STL- und 3MF-Exporten und einer Druckanleitung für Bambu: [enclosure/](enclosure/).
+
+![](docs/previews/enclosure-standing-3d.png)
+
+## Android-App
+Angular + zenit-ui + Capacitor, Einrichtung per Bluetooth LE: [app/](app/). Die Debug-APK baut die CI.
+
+## Aufbau
+Schritt für Schritt: [docs/assembly.md](docs/assembly.md) · Abnahme-Checkliste: [docs/abnahme.md](docs/abnahme.md)
 
 ## Lizenzen
 | Teil | Lizenz |

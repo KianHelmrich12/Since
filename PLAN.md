@@ -81,13 +81,17 @@ Akzeptanz: Tests + APK-Build grün. **MANUELL PRÜFEN**: Auf einem Android-Handy
 - [x] Watchdog, Brownout-Handling, Werksreset per 10 s langem Tastendruck
 
 ## Phase 8 – Gehäuse
-- [ ] OpenSCAD, parametrisch (Displaygröße, Akku-/Board-Maße, Wandstärke)
-- [ ] Frontrahmen mit optionalem Namens-Relief, Rückseite mit USB-C- und Taster-Zugang, Aufsteller + Schlüssellochaufhängung
-- [ ] Export 3MF, Druckhinweise für Bambu (Material, Multicolor, Supports)
+- [x] OpenSCAD, parametrisch (Displaygröße, Akku-/Board-Maße, Wandstärke)
+- [x] Frontrahmen mit optionalem Namens-Relief, Rückseite mit USB-C- und Taster-Zugang, Aufsteller + Schlüssellochaufhängung
+- [x] Export 3MF, Druckhinweise für Bambu (Material, Multicolor, Supports)
+
+Akzeptanz: **MANUELL PRÜFEN (offen)** – Passform mit `bay_test` und echter Platine, unverifizierte Maße in enclosure/README.md nachmessen.
 
 ## Phase 9 – Doku & Release
-- [ ] README mit Fotos, BOM mit Bezugsquellen, Bauanleitung, Strommessungen
-- [ ] CHANGELOG, Tag v1.0.0, Release-Artefakte (firmware.bin, littlefs.bin)
+- [x] README mit Vorschaubildern, BOM mit Bezugsquellen, Bauanleitung (docs/assembly.md), Messanleitung (docs/power.md)
+- [ ] Echte Fotos und Strommesswerte nachtragen (**MANUELL PRÜFEN**, siehe docs/abnahme.md)
+- [x] CHANGELOG, Release-Workflow für firmware.bin, firmware.factory.bin, littlefs.bin
+- [ ] Tag v1.0.0, erst nach bestandener Hardware-Abnahme (docs/abnahme.md)
 - [x] Optional: Browser-Flasher mit ESP Web Tools (docs/flasher/, wird per Release-Workflow auf GitHub Pages veröffentlicht)
 - [x] CI: Host-Tests, Firmware- und LittleFS-Build bei jedem Push
 
