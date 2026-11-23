@@ -28,42 +28,43 @@ Akzeptanz: mindestens 30 Unit-Tests grün, inkl. aller Randfälle.
 Akzeptanz: Tests für Validierung und Round-Trip grün.
 
 ## Phase 3 – Hardware-Bring-up
-- [ ] board_ee04.h: Display-SPI, Taster, Akku-ADC, I²C für RTC, RTC-fähiger GPIO für DS3231-INT (mit Quellenangabe)
-- [ ] Display „Hallo since“, DS3231 lesen/stellen, Akkuspannung messen
+- [x] board_ee04.h: Display-SPI, Taster, Akku-ADC, I²C für RTC, RTC-fähiger GPIO für DS3231-INT (mit Quellenangabe)
+- [x] Display „Hallo since“, DS3231 lesen/stellen, Akkuspannung messen (Code fertig; statt Testbild zeigt die Firmware direkt den Welcome-Screen)
+- [ ] Verdrahtung DS3231 laut hardware/wiring.md aufbauen
 
-Akzeptanz: **MANUELL PRÜFEN** – Text sichtbar, RTC läuft nach Stromtrennung weiter, Spannung plausibel.
+Akzeptanz: **MANUELL PRÜFEN (offen)** – Text sichtbar, RTC läuft nach Stromtrennung weiter, Spannung plausibel.
 
 ## Phase 4 – Darstellung
-- [ ] Layouts: Standard (Name groß, „3 Jahre · 2 Monate · 14 Tage“, „seit 12.03.2026, 08:15“, Gesamttage), Minimal, Geburtstag, Akku leer, Setup-Modus
-- [ ] Fonts mit Umlauten, Akku-Symbol
+- [x] Layouts: Standard (Name groß, „3 Jahre · 2 Monate · 14 Tage“, „seit 12.03.2026, 08:15“, Gesamttage), Minimal, Geburtstag, Akku leer, Setup-Modus
+- [x] Fonts mit Umlauten, Akku-Symbol
 - [ ] Optional: Host-Renderer, der Layouts als PNG/PBM nach docs/previews/ exportiert
 
-Akzeptanz: **MANUELL PRÜFEN** – alle Screens auf dem Gerät ok.
+Akzeptanz: **MANUELL PRÜFEN (offen)** – alle Screens auf dem Gerät ok.
 
 ## Phase 5 – Strom & Deep Sleep
-- [ ] Ablauf: Aufwachen → Grund prüfen (RTC-Alarm/Timer oder Taster) → RTC lesen → nur bei Änderung neu zeichnen → Display schlafen legen → nächsten Alarm setzen → Deep Sleep
-- [ ] DS3231-Alarm über INT als ext0/ext1-Weckquelle, ESP-Timer als Fallback
-- [ ] Akkuschutz: Warnung bei niedrigem Stand, unter Grenzwert „Bitte laden“ anzeigen und lange schlafen
+- [x] Ablauf: Aufwachen → Grund prüfen (RTC-Alarm/Timer oder Taster) → RTC lesen → nur bei Änderung neu zeichnen → Display schlafen legen → nächsten Alarm setzen → Deep Sleep
+- [x] DS3231-Alarm über INT als ext0/ext1-Weckquelle, ESP-Timer als Fallback
+- [x] Akkuschutz: Warnung bei niedrigem Stand, unter Grenzwert „Bitte laden“ anzeigen und lange schlafen
 
-Akzeptanz: **MANUELL PRÜFEN** – Ruhestrom gemessen und in docs/ dokumentiert (Ziel: < 50 µA gesamt).
+Akzeptanz: **MANUELL PRÜFEN (offen)** – Ruhestrom gemessen und in docs/power.md dokumentiert (Ziel: < 50 µA gesamt).
 
 ## Phase 6 – Webportal
-- [ ] Taster → Hotspot since-XXXX (MAC-Suffix), optional WPA2-Passwort, Captive Portal
-- [ ] Display zeigt im Setup SSID + QR-Code zum Verbinden
-- [ ] Seiten: Einstellungen, Uhrzeit vom Handy übernehmen (Browser-Zeit per JS, kein Internet nötig), WLAN für NTP, Status (Akku, FW-Version, letzte Sync), Firmware-Update (OTA-Upload), Werksreset
-- [ ] API: GET/POST /api/config, POST /api/time, GET /api/status, POST /api/ota
-- [ ] Nach 10 min Inaktivität: Portal beenden → Deep Sleep
+- [x] Taster → Hotspot since-XXXX (MAC-Suffix), optional WPA2-Passwort, Captive Portal
+- [x] Display zeigt im Setup SSID + QR-Code zum Verbinden
+- [x] Seiten: Einstellungen, Uhrzeit vom Handy übernehmen (Browser-Zeit per JS, kein Internet nötig), WLAN für NTP, Status (Akku, FW-Version, letzte Sync), Firmware-Update (OTA-Upload), Werksreset
+- [x] API: GET/POST /api/config, POST /api/time, GET /api/status, POST /api/ota
+- [x] Nach 10 min Inaktivität: Portal beenden → Deep Sleep
 
-Akzeptanz: **MANUELL PRÜFEN** – komplette Einrichtung per Handy, überlebt Neustart.
+Akzeptanz: **MANUELL PRÜFEN (offen)** – komplette Einrichtung per Handy, überlebt Neustart. Portal-UI gegen Mock im Browser getestet (docs/previews/).
 
 ## Phase 6b – Android-App (Angular + zenit-ui, Bluetooth LE)
 Zusätzlich zum Portal, das als Fallback ohne App bleibt. OTA läuft weiter nur übers Portal.
 
 Firmware:
-- [ ] BLE-GATT-Service „since“ mit NimBLE-Arduino. Er läuft nur im Setup-Modus (Taster), gleichzeitig mit dem Hotspot, und endet mit demselben 10-min-Timeout.
-- [ ] Characteristics: `config` (JSON lesen/schreiben, gestückelt, gleiches Schema wie `/api/config`), `time` (UTC-Epoch schreiben), `status` (lesen + notify: Akku, FW-Version, letzte Sync, RTC-Lost-Power), `command` (Neu zeichnen, Setup beenden)
-- [ ] Sicherheit: LE Secure Connections mit Passkey, den das E-Paper anzeigt. Schreibende Characteristics nur verschlüsselt. Werksreset gibt es nicht über BLE.
-- [ ] GATT-Protokoll dokumentiert in `docs/ble-protocol.md` (UUIDs, Datenformate, Fehlercodes, Versionierung)
+- [x] BLE-GATT-Service „since“ mit NimBLE-Arduino. Er läuft nur im Setup-Modus (Taster), gleichzeitig mit dem Hotspot, und endet mit demselben 10-min-Timeout.
+- [x] Characteristics: `config` (JSON lesen/schreiben, gestückelt, gleiches Schema wie `/api/config`), `time` (UTC-Epoch schreiben), `status` (lesen + notify: Akku, FW-Version, letzte Sync, RTC-Lost-Power), `command` (Neu zeichnen, Setup beenden)
+- [x] Sicherheit: LE Secure Connections mit Passkey, den das E-Paper anzeigt. Schreibende Characteristics nur verschlüsselt. Werksreset gibt es nicht über BLE.
+- [x] GATT-Protokoll dokumentiert in `docs/ble-protocol.md` (UUIDs, Datenformate, Fehlercodes, Versionierung)
 
 App (`app/`):
 - [ ] Angular-Projekt + Capacitor (Android), zenit-ui via `npm install zenit-ui@npm:@zenit-hosting/zenit-ui` + `ng generate zenit-ui:ng-add --themes`
@@ -75,9 +76,9 @@ App (`app/`):
 Akzeptanz: Tests + APK-Build grün. **MANUELL PRÜFEN**: Auf einem Android-Handy koppeln, Config schreiben und Uhrzeit übernehmen; das Display aktualisiert sich und die Werte überleben einen Neustart.
 
 ## Phase 7 – Zeit-Sync & Robustheit
-- [ ] NTP-Sync wöchentlich, falls WLAN konfiguriert (kurz verbinden, dann WLAN aus)
-- [ ] RTC-„Lost Power“-Flag → Hinweis „Uhrzeit einstellen“
-- [ ] Watchdog, Brownout-Handling, Werksreset per 10 s langem Tastendruck
+- [x] NTP-Sync wöchentlich, falls WLAN konfiguriert (kurz verbinden, dann WLAN aus)
+- [x] RTC-„Lost Power“-Flag → Hinweis „Uhrzeit einstellen“
+- [x] Watchdog, Brownout-Handling, Werksreset per 10 s langem Tastendruck
 
 ## Phase 8 – Gehäuse
 - [ ] OpenSCAD, parametrisch (Displaygröße, Akku-/Board-Maße, Wandstärke)
@@ -87,13 +88,14 @@ Akzeptanz: Tests + APK-Build grün. **MANUELL PRÜFEN**: Auf einem Android-Handy
 ## Phase 9 – Doku & Release
 - [ ] README mit Fotos, BOM mit Bezugsquellen, Bauanleitung, Strommessungen
 - [ ] CHANGELOG, Tag v1.0.0, Release-Artefakte (firmware.bin, littlefs.bin)
-- [ ] Optional: Browser-Flasher mit ESP Web Tools
+- [x] Optional: Browser-Flasher mit ESP Web Tools (docs/flasher/, wird per Release-Workflow auf GitHub Pages veröffentlicht)
+- [x] CI: Host-Tests, Firmware- und LittleFS-Build bei jedem Push
 
 ## Offene Entscheidungen
 Werden erfragt, sobald sie relevant werden.
-- [ ] Lizenz final: GPL-3.0 oder MIT? (vorläufig GPL-3.0-or-later)
-- [ ] Hosting: GitHub öffentlich oder eigenes GitLab, welcher Namespace?
-- [ ] Display: 7,5″ (Bilderrahmen) oder 4,2″ (Tischaufsteller)?
-- [ ] Default-Intervall: stündlich oder alle 10 Minuten?
+- [x] Lizenz: GPL-3.0-or-later (Firmware), CERN-OHL-S-2.0 (Hardware), CC BY-SA 4.0 (Gehäuse)
+- [x] Hosting: GitHub öffentlich (KianHelmrich12/Since), Releases + Web-Flasher über GitHub Pages
+- [x] Display: 7,5″ (Firmware); Gehäuse parametrisch auch für 4,2″
+- [x] Default-Intervall: „auto“ – nur neu zeichnen, wenn sich der Text ändert (Tagesgrenze, Mitternacht, mit Stundenanzeige stündlich); festes Intervall 10–1440 min wählbar
 - [x] App: Capacitor-Android-App, BLE zusätzlich zum Portal, Code in `app/`, Umsetzung nach Phase 6
-- [ ] v2-Ideen: mehrere Ereignisse (Geschwister), Farb-E-Paper, Home-Assistant-Anbindung
+- [ ] v2-Ideen (nicht Teil von v1.0): mehrere Ereignisse (Geschwister), Farb-E-Paper, Home-Assistant-Anbindung

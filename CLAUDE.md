@@ -68,6 +68,8 @@ pio run -e ee04 -t upload      # flashen (USB-C)
 pio run -e ee04 -t uploadfs    # Web-UI nach LittleFS
 pio device monitor -b 115200   # serielle Ausgabe
 pio test -e native             # Host-Tests ohne Hardware
+pio run -e ee04 -t buildfs     # LittleFS-Image (Web-UI wird vorher per tools/build_web.py gzip't)
+python3 tools/portal_mock.py   # Portal-UI ohne Hardware auf http://localhost:8080/
 ```
 Der native Test-Env braucht einen Host-C++-Compiler (gcc oder clang) im PATH.
 

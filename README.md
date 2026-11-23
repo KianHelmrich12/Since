@@ -10,7 +10,24 @@ Gedacht als Geschenk zur Geburt eines Kindes, aber genauso für Hochzeit, Jahres
 Firmengründung. Das Gerät läuft monatelang mit einer Akkuladung, braucht beim Empfänger kein WLAN
 und wird per Handy über einen eigenen Hotspot eingerichtet.
 
-> **Status:** frühe Entwicklung – siehe [PLAN.md](PLAN.md).
+> **Status:** Firmware, Portal und Tests sind fertig; die Hardware-Abnahme steht noch aus
+> (siehe **MANUELL PRÜFEN** in [PLAN.md](PLAN.md)).
+
+## Funktionen
+- Zeigt Jahre · Monate · Tage seit (oder bis) einem Ereignis, dazu Gesamttage und -wochen und Meilensteine (Geburtstag, Tag 100/500/1000 …, Monatstage im ersten und zweiten Jahr).
+- Deep Sleep zwischen den Aktualisierungen; gezeichnet wird nur, wenn sich der Text ändert.
+- Die DS3231-RTC hält die Uhrzeit ohne WLAN. Ein NTP-Abgleich einmal pro Woche ist optional.
+- Einrichtung per Handy, mit derselben API auf zwei Wegen:
+  - Taste 1 öffnet einen eigenen Hotspot mit QR-Code und Captive Portal (Einstellungen, Uhrzeit vom Handy, Status, Firmware-Update, Werksreset).
+  - Parallel geht es per Bluetooth LE mit der Android-App ([docs/ble-protocol.md](docs/ble-protocol.md)).
+- Die Kernlogik (`since_core`) läuft ohne Hardware und ist mit Unit-Tests abgedeckt.
+
+## Bedienung
+| Taste | Funktion |
+|---|---|
+| Taste 1 (KEY0) | Einrichtung starten (10 min); **10 s halten** = Werksreset |
+| Taste 2 (KEY1) | Display neu zeichnen |
+| Taste 3 (KEY2) | Layout Standard ↔ Minimal |
 
 ## Hardware
 - Seeed XIAO ePaper Display Board EE04 (XIAO ESP32-S3 Plus)
@@ -18,7 +35,7 @@ und wird per Handy über einen eigenen Hotspot eingerichtet.
 - DS3231-RTC mit LIR2032
 - LiPo 1S 3,7 V, ~2000 mAh, JST-PH 2.0
 
-Details, Verdrahtung und BOM folgen in [hardware/](hardware/).
+Verdrahtung: [hardware/wiring.md](hardware/wiring.md) · Stückliste: [hardware/BOM.md](hardware/BOM.md) · Pinbelegung mit Quellen: [hardware/ee04-pinout.md](hardware/ee04-pinout.md) · Strom: [docs/power.md](docs/power.md)
 
 ## Firmware bauen
 Voraussetzung: [PlatformIO Core](https://docs.platformio.org/en/latest/core/installation/index.html)
@@ -31,7 +48,10 @@ pio run -e ee04 -t upload      # flashen (USB-C)
 pio run -e ee04 -t uploadfs    # Web-UI nach LittleFS
 pio device monitor -b 115200   # serielle Ausgabe
 pio test -e native             # Host-Tests ohne Hardware
+python3 tools/portal_mock.py   # Portal-UI ohne Gerät: http://localhost:8080/
 ```
+
+Ohne Toolchain: Nach einem Release lässt sich die Firmware im Browser installieren (Chrome/Edge), über den Web-Flasher auf GitHub Pages ([docs/flasher/](docs/flasher/)).
 
 ## Gehäuse
 Parametrisches OpenSCAD-Modell für Bambu-Drucker in [enclosure/](enclosure/) (folgt).
