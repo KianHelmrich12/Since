@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Arduino.h>
 
+#include "config_store.h"
 #include "since_core.h"
 #include "version.h"
 
@@ -12,6 +13,10 @@ void setup() {
     delay(10);
   }
   Serial.printf("since firmware %s (core %s)\n", SINCE_FW_VERSION, since::coreVersion());
+  bool loaded = false;
+  const since::Config cfg = since::loadConfig(&loaded);
+  Serial.printf("config %s: %s\n", loaded ? "loaded" : "defaults",
+                since::toJson(cfg, /*includeSecrets=*/false).c_str());
 }
 
 void loop() {
