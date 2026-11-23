@@ -66,10 +66,10 @@ Firmware:
 - [ ] GATT-Protokoll dokumentiert in `docs/ble-protocol.md` (UUIDs, Datenformate, Fehlercodes, Versionierung)
 
 App (`app/`):
-- [ ] Angular-Projekt + Capacitor (Android), zenit-ui via `npm install zenit-ui@npm:@zenit-hosting/zenit-ui` + `ng generate zenit-ui:ng-add --themes`
-- [ ] BLE-Schicht über `@capacitor-community/bluetooth-le` hinter einem Interface, dazu ein Mock-Gerät für Browser-Entwicklung und Tests
-- [ ] Seiten: Gerät suchen/koppeln, Einstellungen (Name, Anlass, Datum/Uhrzeit, TZ, Layout, Intervall, WLAN/NTP), Uhrzeit vom Handy übernehmen, Status
-- [ ] Datenmodell + Validierung spiegeln since_core. Kontrakttests gegen `shared/fixtures/`
+- [x] Angular-Projekt + Capacitor (Android), zenit-ui via `npm install zenit-ui@npm:@zenit-hosting/zenit-ui` + `ng generate zenit-ui:ng-add --themes`
+- [x] BLE-Schicht über `@capacitor-community/bluetooth-le` hinter einem Interface, dazu ein Mock-Gerät für Browser-Entwicklung und Tests
+- [x] Seiten: Gerät suchen/koppeln, Einstellungen (Name, Anlass, Datum/Uhrzeit, TZ, Layout, Intervall, WLAN/NTP), Uhrzeit vom Handy übernehmen, Status
+- [x] Datenmodell + Validierung spiegeln since_core. Kontrakttests gegen `shared/fixtures/`
 - [ ] Unit-Tests (`ng test`) grün, Debug-APK baut (`npx cap sync android` + Gradle `assembleDebug`)
 
 Akzeptanz: Tests + APK-Build grün. **MANUELL PRÜFEN**: Auf einem Android-Handy koppeln, Config schreiben und Uhrzeit übernehmen; das Display aktualisiert sich und die Werte überleben einen Neustart.
