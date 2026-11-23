@@ -1,0 +1,24 @@
+<z-page-header title="Uhrzeit" sub="Stellt die RTC des Geräts auf die Uhrzeit dieses Handys.">
+  <button zBtn="secondary" type="button" (click)="refresh()">Neu lesen</button>
+</z-page-header>
+
+@if (error()) {
+  <z-alert status="danger" icon="error" title="Die Uhrzeit ließ sich nicht übertragen">
+    {{ error() }}
+  </z-alert>
+} @else if (device.status()?.rtcLostPower) {
+  <z-alert status="warning" icon="schedule" title="Die RTC hat die Uhrzeit verloren">
+    Die Knopfzelle war leer oder fehlte. Übernimm die Uhrzeit vom Handy.
+  </z-alert>
+}
+
+<z-panel title="Uhren im Vergleich" [headingLevel]="2" [busy]="device.status() === null">
+  <div class="z-stack">
+    <z-spec-list [items]="items()" />
+    <div class="z-cluster">
+      <button zBtn="primary" type="button" [loading]="sending()" (click)="uebernehmen()">
+        Uhrzeit vom Handy übernehmen
+      </button>
+    </div>
+  </div>
+</z-panel>

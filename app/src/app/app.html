@@ -1,3 +1,28 @@
-<router-outlet />
+<a zSkipLink href="#inhalt">Zum Hauptinhalt springen</a>
+
+<div class="z-container">
+  <z-app-header navLabel="Hauptnavigation">
+    <a zBrand routerLink="/geraet">since</a>
+    @for (link of links; track link.route) {
+      @if (!link.needsDevice || device.connected()) {
+        <a
+          zHeaderLink
+          [routerLink]="link.route"
+          routerLinkActive
+          #aktiv="routerLinkActive"
+          [active]="aktiv.isActive"
+          >{{ link.name }}</a
+        >
+      }
+    }
+    @if (device.transportKind === 'mock') {
+      <z-badge zHeaderEnd status="info">Simulation</z-badge>
+    }
+  </z-app-header>
+</div>
+
+<main id="inhalt" tabindex="-1" class="z-container app-main">
+  <router-outlet />
+</main>
 
 <z-toast-outlet />

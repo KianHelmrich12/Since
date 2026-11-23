@@ -1,0 +1,207 @@
+<z-page-header
+  title="Einstellungen"
+  sub="Was das Display zeigt, wie oft es neu zeichnet und welches WLAN es nutzt."
+>
+  <button zBtn="secondary" type="button" [disabled]="loading()" (click)="load()">Neu laden</button>
+</z-page-header>
+
+@if (error()) {
+  <z-alert status="danger" icon="error" title="Speichern hat nicht geklappt">
+    {{ error() }}
+  </z-alert>
+}
+
+<form class="z-stack" novalidate (submit)="$event.preventDefault(); speichern()">
+  <z-panel title="Anzeige" [headingLevel]="2" [busy]="loading()">
+    <div class="z-stack">
+      <z-field
+        label="Name"
+        for="name"
+        hint="Steht groß auf dem Display, höchstens 32 Zeichen."
+        [error]="fehler('name', formular.name())"
+      >
+        <input zInput id="name" autocomplete="off" [formField]="formular.name" />
+      </z-field>
+
+      <z-field
+        label="Anlass"
+        for="occasion"
+        hint="Zum Beispiel „seit deiner Geburt“, höchstens 64 Zeichen."
+        [error]="fehler('occasion', formular.occasion())"
+      >
+        <input zInput id="occasion" autocomplete="off" [formField]="formular.occasion" />
+      </z-field>
+
+      <div class="app-pair">
+        <z-field
+          label="Datum des Ereignisses"
+          for="eventDate"
+          hint="Leer lassen, wenn es noch kein Ereignis gibt."
+          [error]="fehler('eventDate', formular.eventDate())"
+        >
+          <input zInput id="eventDate" type="date" [formField]="formular.eventDate" />
+        </z-field>
+        <z-field
+          label="Uhrzeit"
+          for="eventTime"
+          hint="Lokalzeit in der gewählten Zeitzone."
+          [error]="fehler('eventTime', formular.eventTime())"
+        >
+          <input zInput id="eventTime" type="time" [formField]="formular.eventTime" />
+        </z-field>
+      </div>
+
+      <z-field label="Zeitzone" for="tzPreset" [error]="fehler('tzPreset', formular.tzPreset())">
+        <z-select>
+          <select id="tzPreset" [formField]="formular.tzPreset">
+            @for (p of tzPresets; track p.value) {
+              <option [value]="p.value">{{ p.label }}</option>
+            }
+            <option [value]="customTz">Eigene POSIX-Zeitzone</option>
+          </select>
+        </z-select>
+      </z-field>
+
+      @if (model().tzPreset === customTz) {
+        <z-field
+          label="POSIX-Zeitzone"
+          for="tzCustom"
+          hint="Zum Beispiel EST5EDT,M3.2.0,M11.1.0 oder <+0530>-5:30, höchstens 64 Zeichen."
+          [error]="fehler('tzCustom', formular.tzCustom())"
+        >
+          <input
+            zInput
+            mono
+            id="tzCustom"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            [formField]="formular.tzCustom"
+          />
+        </z-field>
+      } @else {
+        <p class="z-muted z-mono app-note">{{ model().tzPreset }}</p>
+      }
+
+      <z-setting
+        title="Layout"
+        key="layout"
+        description="Anordnung der Texte auf dem Display."
+        titleId="layout-titel"
+      >
+        <z-segment
+          [options]="layouts"
+          [formField]="formular.layout"
+          aria-labelledby="layout-titel"
+        />
+      </z-setting>
+
+      <z-checkbox [formField]="formular.showTime">Stunden zusätzlich anzeigen</z-checkbox>
+    </div>
+  </z-panel>
+
+  <z-panel title="Aktualisierung" [headingLevel]="2" [busy]="loading()">
+    <div class="z-stack">
+      <z-setting
+        title="Modus"
+        key="update.mode"
+        description="Automatisch zeichnet nur neu, wenn sich der Text ändert. Das spart am meisten Strom."
+        titleId="modus-titel"
+      >
+        <z-segment
+          [options]="updateModes"
+          [formField]="formular.updateMode"
+          aria-labelledby="modus-titel"
+        />
+      </z-setting>
+
+      @if (model().updateMode === 'interval') {
+        <z-field
+          label="Intervall in Minuten"
+          for="intervalMinutes"
+          hint="10 bis 1440 Minuten."
+          [error]="fehler('intervalMinutes', formular.intervalMinutes())"
+        >
+          <input
+            zInput
+            mono
+            id="intervalMinutes"
+            type="number"
+            inputmode="numeric"
+            [formField]="formular.intervalMinutes"
+          />
+        </z-field>
+      }
+    </div>
+  </z-panel>
+
+  <z-panel title="WLAN und Zeit" [headingLevel]="2" [busy]="loading()">
+    <div class="z-stack">
+      <z-field
+        label="WLAN-Name (SSID)"
+        for="ssid"
+        hint="Nur für die Zeitsynchronisierung per NTP. Ohne WLAN hält die RTC die Uhrzeit."
+        [error]="fehler('ssid', formular.ssid())"
+      >
+        <input
+          zInput
+          id="ssid"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+          [formField]="formular.ssid"
+        />
+      </z-field>
+
+      <z-field
+        label="WLAN-Passwort"
+        for="password"
+        [hint]="
+          passwordSet()
+            ? 'Gesetzt. Leer lassen, um es zu behalten.'
+            : 'Nicht gesetzt. 8 bis 63 Zeichen, leer für ein offenes Netz.'
+        "
+        [error]="fehler('password', formular.password())"
+      >
+        <input
+          zInput
+          id="password"
+          type="password"
+          autocomplete="new-password"
+          [formField]="formular.password"
+        />
+      </z-field>
+      @if (passwordSet()) {
+        <div class="z-cluster">
+          <button zBtn="ghost" size="sm" type="button" (click)="passwortEntfernen()">
+            Passwort entfernen
+          </button>
+        </div>
+      }
+
+      <z-checkbox [formField]="formular.ntp" ariaDescribedby="ntp-fehler">
+        Uhrzeit einmal pro Woche per NTP synchronisieren
+      </z-checkbox>
+      @if (fehler('ntp', formular.ntp()); as satz) {
+        <span class="z-field__error" id="ntp-fehler" role="alert">{{ satz }}</span>
+      }
+    </div>
+  </z-panel>
+
+  <z-panel title="Portal" [headingLevel]="2" [busy]="loading()">
+    <div class="z-stack">
+      <z-checkbox [formField]="formular.portalSecure" ariaDescribedby="portal-hinweis">
+        Hotspot mit Passwort schützen
+      </z-checkbox>
+      <span id="portal-hinweis" class="z-muted app-note">
+        Das Display zeigt das zufällige WPA2-Passwort, solange der Setup-Modus läuft.
+      </span>
+    </div>
+  </z-panel>
+
+  <div class="z-cluster">
+    <button zBtn="primary" type="submit" [loading]="saving()" [disabled]="loading()">
+      Speichern
+    </button>
+  </div>
+</form>

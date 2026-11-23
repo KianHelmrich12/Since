@@ -9,4 +9,19 @@
 @import '@fontsource/jetbrains-mono/400.css';
 @import '@fontsource/jetbrains-mono/600.css';
 
-/* You can add global styles to this file, and also import other style files */
+/* Seitenrahmen; jede Seite ist selbst ein z-stack (PageHeader, dann Panels). */
+.app-main {
+  padding-block: var(--space-6) var(--space-8);
+}
+
+/* Datum und Uhrzeit nebeneinander, auf schmalen Bildschirmen untereinander. */
+.app-pair {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+}
+
+.app-note {
+  margin: 0;
+  max-width: var(--measure);
+}
