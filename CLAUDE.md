@@ -71,6 +71,8 @@ pio test -e native             # Host-Tests ohne Hardware
 pio run -e ee04 -t buildfs     # LittleFS-Image (Web-UI wird vorher per tools/build_web.py gzip't)
 python3 tools/portal_mock.py   # Portal-UI ohne Hardware auf http://localhost:8080/
 python3 tools/preview.py       # Display-Vorschauen nach docs/previews/ (nach pio test -e native)
+python3 tools/sim.py --config ../shared/fixtures/config/valid/full.json --days 7 --out sim-out
+                               # Geräte-Emulator: Weckzyklen im Zeitraffer, Bilder, Akkulaufzeit
 ```
 Der native Test-Env braucht einen Host-C++-Compiler (gcc oder clang) im PATH.
 
@@ -93,7 +95,9 @@ npx cap sync android && (cd android && ./gradlew assembleDebug)
   den Sleep-Strom, ohne dass sie dokumentiert ist.
 - Zeit intern immer UTC. Lokalzeit nur für Anzeige/Eingabe über POSIX-TZ
   (Default `CET-1CEST,M3.5.0,M10.5.0/3`).
-- Alles Testbare gehört in `since_core` und bekommt Tests. `since_core` darf weder Arduino.h
+- Alles Testbare gehört in `since_core` und bekommt Tests. Die Entscheidungslogik eines
+  Weckzyklus liegt in `since::runCycle` und wird von Firmware und Emulator gemeinsam genutzt.
+- Eigener Code kompiliert ohne Warnungen (`-Werror` für src/ und native). `since_core` darf weder Arduino.h
   noch ESP-IDF-Header einbinden.
 - Hardware-Schritte als **MANUELL PRÜFEN** kennzeichnen, nie Erfolg annehmen.
 - Keine Secrets im Repo (WLAN-Daten nur im NVS des Geräts).

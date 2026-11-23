@@ -56,6 +56,8 @@ pio run -e ee04 -t uploadfs    # Web-UI nach LittleFS
 pio device monitor -b 115200   # serielle Ausgabe
 pio test -e native             # Host-Tests ohne Hardware
 python3 tools/portal_mock.py   # Portal-UI ohne Gerät: http://localhost:8080/
+python3 tools/sim.py --config ../shared/fixtures/config/valid/full.json --days 7 --out sim-out
+                               # Emulator: Weckzyklen im Zeitraffer + Bilder + Akkulaufzeit
 ```
 
 Ohne Toolchain: Nach einem Release lässt sich die Firmware im Browser installieren (Chrome/Edge), über den Web-Flasher auf GitHub Pages ([docs/flasher/](docs/flasher/)).
@@ -69,7 +71,7 @@ Parametrisches OpenSCAD-Modell für 7,5″ und 4,2″ mit STL- und 3MF-Exporten 
 Angular + zenit-ui + Capacitor, Einrichtung per Bluetooth LE: [app/](app/). Die Debug-APK baut die CI.
 
 ## Aufbau
-Schritt für Schritt: [docs/assembly.md](docs/assembly.md) · Abnahme-Checkliste: [docs/abnahme.md](docs/abnahme.md)
+Schritt für Schritt: [docs/assembly.md](docs/assembly.md) · Abnahme-Checkliste: [docs/abnahme.md](docs/abnahme.md) · Kurzanleitung zum Beilegen: [docs/kurzanleitung.md](docs/kurzanleitung.md)
 
 ## Lizenzen
 | Teil | Lizenz |

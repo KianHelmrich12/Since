@@ -14,6 +14,31 @@ Ziel: **< 50 µA** im Deep Sleep (gesamtes Gerät, am Akku gemessen).
 | DS3231 | aus der LIR2032 versorgt | belastet den LiPo nicht |
 | E-Paper | Hibernate, Bild bleibt stehen | ~0 |
 
+## Hochrechnung mit dem Emulator
+`python3 firmware/tools/sim.py --config shared/fixtures/config/valid/full.json --until-empty`
+spielt die echten Weckzyklen (`since::runCycle`) im Zeitraffer durch. Die Werte sind **Annahmen**,
+bis unten echte Messwerte stehen.
+
+| Annahme | Wert |
+|---|---|
+| Ruhestrom | 20 µA (`--sleep-ua`) |
+| Wach ohne Zeichnen | 0,3 s × 40 mA |
+| Vollbild-Refresh | 4,5 s × 35 mA (`--draw-ms`, `--draw-ma`) |
+| Selbstentladung LiPo | 2 %/Monat |
+
+Ergebnis für Layout „Standard“, Modus „auto“, 2000 mAh (Stand dieses Commits):
+
+| | mAh/Tag |
+|---|---|
+| Schlaf | 0,48 |
+| Aufwachen + Zeichnen (2 Zyklen/Tag, ~1 Refresh/Tag) | 0,05 |
+| Selbstentladung | 1,33 |
+| **Summe** | **1,86** → etwa **1050 Tage** bis „Bitte laden“ |
+
+Den Verbrauch bestimmen also der Ruhestrom und die Selbstentladung, nicht das Display. Jedes
+µA Ruhestrom kostet etwa 0,024 mAh/Tag. Mit `showTime` (stündlich) steigt der aktive Anteil auf
+etwa 1 mAh/Tag.
+
 ## Messung
 1. Strommessgerät mit µA-Bereich (oder einen Power-Profiler wie Nordic PPK2) **in Reihe zum Akku** schalten: Akku → Messgerät → JST-Stecker.
 2. USB abziehen (sonst versorgt der Laderegler).
